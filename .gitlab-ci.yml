@@ -43,7 +43,7 @@ test-homework01-private:
 validate-homework01:
   stage: validate
   variables:
-    ASSIGNMENT_DEADLINE: "2020-11-01T23:59:59"
+    ASSIGNMENT_DEADLINE: "2021-03-21T23:59:59"
   tags:
     - bi-pyt-assignment-validate
   script:
@@ -85,7 +85,7 @@ test-homework02-private:
 validate-homework02:
   stage: validate
   variables:
-    ASSIGNMENT_DEADLINE: "2020-11-15T23:59:59"
+    ASSIGNMENT_DEADLINE: "2021-04-04T23:59:59"
   tags:
     - bi-pyt-assignment-validate
   script:
@@ -128,7 +128,7 @@ test-homework03-private:
 validate-homework03:
   stage: validate
   variables:
-    ASSIGNMENT_DEADLINE: "2020-11-29T23:59:59"
+    ASSIGNMENT_DEADLINE: "2021-04-18T23:59:59"
   tags:
     - bi-pyt-assignment-validate
   script:
@@ -147,7 +147,7 @@ test-homework04:
     - bi-pyt-assignment
   script:
     - cd homework04
-    - "gitlab-runner-secrets verify-file-signatures tests/*.py data/*.csv"
+    - "gitlab-runner-secrets verify-file-signatures tests/*.py tests/*.csv"
     - sudo -u nobody pytest -c /etc/config/pytest.ini tests/test_analysis.py
   only:
     - homework04
@@ -157,6 +157,7 @@ test-homework04-private:
   tags:
     - bi-pyt-assignment-private
   script:
+    - "gitlab-runner-secrets verify-file-signatures tests/*.csv"
     - sudo -u nobody pytest -c /etc/config/pytest.ini -v --tb=no --no-summary -rN tests/test_analysis_private.py
     - sleep 10
   only:
@@ -170,7 +171,7 @@ test-homework04-private:
 validate-homework04:
   stage: validate
   variables:
-    ASSIGNMENT_DEADLINE: "2020-12-13T23:59:59"
+    ASSIGNMENT_DEADLINE: "2021-05-09T23:59:59"
   tags:
     - bi-pyt-assignment-validate
   script:
