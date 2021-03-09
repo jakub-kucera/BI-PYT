@@ -47,7 +47,38 @@ def update(alive: set, size: (int, int), iter_n: int) -> set:
     """
     # TODO: Implement update rules.
 
-    return set()
+    for _ in range(iter_n):
+
+        new_alive = set()
+
+        # count neighbors
+        for y in range(size[0]):
+            for x in range(size[1]):
+                alive_neighbors = 0
+                if (y + 1, x) in alive:
+                    alive_neighbors += 1
+                if (y - 1, x) in alive:
+                    alive_neighbors += 1
+                if (y, x + 1) in alive:
+                    alive_neighbors += 1
+                if (y, x - 1) in alive:
+                    alive_neighbors += 1
+                if (y + 1, x + 1) in alive:
+                    alive_neighbors += 1
+                if (y + 1, x - 1) in alive:
+                    alive_neighbors += 1
+                if (y - 1, x + 1) in alive:
+                    alive_neighbors += 1
+                if (y - 1, x - 1) in alive:
+                    alive_neighbors += 1
+
+                if alive_neighbors == 3 or (alive_neighbors == 2 and (y, x) in alive):
+                    new_alive.add((y, x))
+
+        alive = new_alive #todo check if copy
+
+
+    return alive
 
 
 def draw(alive: set, size: (int, int)) -> str:
@@ -74,4 +105,18 @@ def draw(alive: set, size: (int, int)) -> str:
     # |   |
     # |   |
     # +---+
-    return '<board drawing>'
+    drawn_map = "+" + size[1]*"-" + "+\n"
+
+    for y in range(size[0]):
+        drawn_map += "|"
+        for x in range(size[1]):
+            if (y, x) in alive:
+                drawn_map += "X"
+            else:
+                drawn_map += " "
+        drawn_map += "|\n"
+
+    drawn_map += "+" + size[1]*"-" + "+"
+
+
+    return drawn_map
