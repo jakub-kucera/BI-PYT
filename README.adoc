@@ -39,5 +39,12 @@ Each homework has a set of attached unit tests. You can run these tests locally 
 
 Similar to each laboratory create a **special branch** for each homework and name it `homeworkXX`, where XX is zero padded number of the homework (e.g. homework01). The branch naming is important because of automated testing on Gitlab. If you don't name the branch correctly, tests will not be executed by the CI and the homework solution will not be accepted.
 
-After the homework is finished, commit and push your homework branch to faculty Gitlab and check that pipeline runned successfully (check points in grades.fit.cvut.cz).
+After the homework is finished, commit and push your homework branch to faculty Gitlab. 
+
+On Gitlab, create a Merge request from your branch to master: 
+
+. (Left Menu) Merge Requests -> New merge request
+.. Source branch will be _your repo_ and **homework branch** (eg. homework01).
+.. Target branch will be also _your repo_ and branch **master**.
+. Then click "Compare branches and continue" and "Submit merge request".
 
