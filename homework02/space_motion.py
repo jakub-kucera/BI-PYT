@@ -53,6 +53,8 @@ Force = namedtuple('Force', 'fx fy')
 # time_stamp_s = {'s': 1, 'min': 60, 'h': 3600, 'days': 3600 * 24}
 time_func_unit = {'ns': (time.time_ns, 1), 'us': (time.time_ns, 10 ** 3), 'ms': (time.time_ns, 10 ** 6),
                   's': (time.time, 1), 'min': (time.time, 60), 'h': (time.time, 3600), 'days': (time.time, 3600 * 24)}
+# time_func_unit = {'ns': (time.time_ns, 1), 'us': (time.time_ns, 10 ** -3), 'ms': (time.time_ns, 10 ** -6),
+#                   's': (time.time, 1), 'min': (time.time, 0), 'h': (time.time, 0), 'days': (time.time, 0)}
 
 
 def truncate(number, ndigints):
@@ -61,9 +63,9 @@ def truncate(number, ndigints):
 
 def logging(unit='ms'):
     time_func, time_unit_multiplier = time_func_unit[unit]
+    num_of_calls = 0
 
     def decorator(func):
-        num_of_calls = 0
 
         def logger(*args, **kwargs):
             nonlocal num_of_calls
@@ -74,8 +76,9 @@ def logging(unit='ms'):
             start_time = time_func()
             returned = func(*args, **kwargs)
             run_time = time_func() - start_time
-            print(f"{func.__name__} - {num_of_calls} - {truncate(run_time.real / time_unit_multiplier, 3)} {unit}")
-            # print(f"{func.__name__} - {num_of_calls} - {round(run_time.real / time_unit_multiplier, 3)} {unit}")
+            time_in_units = run_time.real * time_unit_multiplier
+            # print(f"{func.__name__} - {num_of_calls} - {truncate(run_time.real / time_unit_multiplier, 3)} {unit}")
+            print(f"{func.__name__} - {num_of_calls} - {time_in_units:.3f} {unit}")
             return returned
 
         return logger
