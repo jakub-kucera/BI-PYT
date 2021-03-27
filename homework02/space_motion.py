@@ -48,25 +48,30 @@ from math import sqrt
 G = 6.67408e-11  # N-m2/kg2
 SpaceObject = namedtuple('SpaceObject', 'name mass x y vx vy color')
 Force = namedtuple('Force', 'fx fy')
-TimeMap = {'ns': 1, 'us': 10 ** 3, 'ms': 10 ** 6, 's': 10 ** 9, 'min': (10 ** 9) * 60, 'h': (10 ** 9) * 3600,
-           'days': (10 ** 9) * 3600 * 24}
+
+# time_stamp_ns = {'ns': 1, 'us': 10 ** 3, 'ms': 10 ** 6}
+# time_stamp_s = {'s': 1, 'min': 60, 'h': 3600, 'days': 3600 * 24}
+time_func_unit = {'ns': (time.time_ns, 1), 'us': (time.time_ns, 10 ** 3), 'ms': (time.time_ns, 10 ** 6),
+                  's': (time.time, 1), 'min': (time.time, 60), 'h': (time.time, 3600), 'days': (time.time, 3600 * 24)}
 
 
 def logging(unit='ms'):
+    time_func, time_unit_multiplier = time_func_unit[unit]
+
     def decorator(func):
         num_of_calls = 0
 
         def logger(*args, **kwargs):
-            # call passed function
             nonlocal num_of_calls
+            nonlocal time_func
+            nonlocal time_unit_multiplier
             num_of_calls += 1
-            start_time = time.time_ns()
+            # calling passed function
+            start_time = time_func()
             returned = func(*args, **kwargs)
-            run_time = time.time_ns() - start_time
-            print(f"{func.__name__} - {num_of_calls} - {round(run_time.real / TimeMap[unit], 3)} {unit}")
-            return returned;
-
-        # end timer and print
+            run_time = time_func() - start_time
+            print(f"{func.__name__} - {num_of_calls} - {round(run_time.real / time_unit_multiplier, 3)} {unit}")
+            return returned
 
         return logger
 
