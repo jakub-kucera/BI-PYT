@@ -41,7 +41,7 @@ Good luck!
 import time  # measuring time
 import datetime
 from collections import namedtuple
-from math import sqrt
+from math import sqrt, floor
 
 # Define universal gravitation constant
 
@@ -53,6 +53,10 @@ Force = namedtuple('Force', 'fx fy')
 # time_stamp_s = {'s': 1, 'min': 60, 'h': 3600, 'days': 3600 * 24}
 time_func_unit = {'ns': (time.time_ns, 1), 'us': (time.time_ns, 10 ** 3), 'ms': (time.time_ns, 10 ** 6),
                   's': (time.time, 1), 'min': (time.time, 60), 'h': (time.time, 3600), 'days': (time.time, 3600 * 24)}
+
+
+def truncate(number, ndigints):
+    return floor(number * 10 ** ndigints) / 10 ** ndigints
 
 
 def logging(unit='ms'):
@@ -70,7 +74,8 @@ def logging(unit='ms'):
             start_time = time_func()
             returned = func(*args, **kwargs)
             run_time = time_func() - start_time
-            print(f"{func.__name__} - {num_of_calls} - {round(run_time / time_unit_multiplier, 3)} {unit}")
+            print(f"{func.__name__} - {num_of_calls} - {truncate(run_time.real / time_unit_multiplier, 3)} {unit}")
+            # print(f"{func.__name__} - {num_of_calls} - {round(run_time.real / time_unit_multiplier, 3)} {unit}")
             return returned
 
         return logger
