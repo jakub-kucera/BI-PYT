@@ -76,7 +76,7 @@ def logging(unit='ms'):
             start_time = time_func()
             returned = func(*args, **kwargs)
             run_time = time_func() - start_time
-            time_in_units = run_time.real * time_unit_multiplier
+            time_in_units = run_time.real / time_unit_multiplier
             # print(f"{func.__name__} - {num_of_calls} - {truncate(run_time.real / time_unit_multiplier, 3)} {unit}")
             print(f"{func.__name__} - {num_of_calls} - {time_in_units:.3f} {unit}")
             return returned
