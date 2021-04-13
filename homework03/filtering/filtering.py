@@ -52,10 +52,10 @@ def apply_filter_rgb(in_img: np.array, flipped_kernel: np.array) -> np.array:
 
     for w in workers:
         w.start()
-        w.join()
+        # w.join()
 
-    # for w in workers:
-    #     w.join()
+    for w in workers:
+        w.join()
     #
     # for dim in range(dimensions):
     #     for img_row in range(padding_size, img_rows + padding_size + 1):
