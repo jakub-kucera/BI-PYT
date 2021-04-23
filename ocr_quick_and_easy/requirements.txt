@@ -1,0 +1,10 @@
+numpy
+matplotlib
+pygame
+pytest
+Pillow
+flake8
+mypy
+pylint
+filetype
+
