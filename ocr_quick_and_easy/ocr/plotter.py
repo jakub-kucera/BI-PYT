@@ -1,9 +1,15 @@
 import numpy as np
+import matplotlib.pyplot as plt
+
 
 class Plotter:
     def __init__(self):
-        pass
+        self.records = []
         # self.records = np.array()
 
     def add_record(self, value: int):
-        pass
+        self.records += [value]
+
+    def show(self):
+        plt.plot(self.records)
+        plt.show()
