@@ -1,11 +1,14 @@
 # , img_width=16, img_height=16
 from ocr.ocr import OCR
+from ocr.plotter import Plotter
 
 if __name__ == '__main__':
     print("Start")
-    ocrko = OCR()
+    plotter = Plotter()
+    ocrko = OCR(plotter=plotter)
 
     ocrko.bruteforce()
+    plotter.show()
 
 
 # for loop num_pixels++ until solution found
