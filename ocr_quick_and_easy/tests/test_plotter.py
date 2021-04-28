@@ -24,9 +24,22 @@ def test_plotter_create(dataset_directory, mocker):
     (TEST_DEFAULT_DATASET, []),
     (TEST_DEFAULT_DATASET_ADVANCED, [1]),
     ("testik", [1, 2, 3]),
-    ("asfsdafasfd", [x for x in range(0, 20, 2)]),
+    ("asfsdafasfd", list(range(0, 20, 2))),
 ])
-def test_plotter_add(dataset_directory, records, mocker):
+def test_plotter_create(dataset_directory, records, mocker):
+    mocker.patch('matplotlib.pyplot.title')
+    plotter = Plotter(dataset_directory=dataset_directory, records=records)
+    plt.title.assert_called_once_with(dataset_directory)
+    assert plotter.records == records
+
+
+@pytest.mark.parametrize("dataset_directory, records", [
+    (TEST_DEFAULT_DATASET, []),
+    (TEST_DEFAULT_DATASET_ADVANCED, [1]),
+    ("testik", [1, 2, 3]),
+    ("asfsdafasfd", list(range(0, 20, 2))),
+])
+def test_plotter_add(dataset_directory, records):
     plotter = Plotter(dataset_directory)
     assert plotter.records == []
 
@@ -41,7 +54,7 @@ def test_plotter_add(dataset_directory, records, mocker):
     (TEST_DEFAULT_DATASET, []),
     (TEST_DEFAULT_DATASET_ADVANCED, [1]),
     ("testik", [1, 2, 3]),
-    ("asfsdafasfd", [x for x in range(0, 20, 2)]),
+    ("asfsdafasfd", list(range(0, 20, 2))),
 ])
 def test_plotter_show(dataset_directory, records, mocker):
     mocker.patch('matplotlib.pyplot.show')

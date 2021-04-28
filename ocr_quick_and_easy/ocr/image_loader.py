@@ -1,6 +1,6 @@
 import os
 import pathlib
-from typing import List
+from typing import List, Tuple
 import numpy as np
 from PIL import Image
 import filetype
@@ -75,21 +75,24 @@ class ImageLoader:
         return overlap
 
     @staticmethod
-    def get_filtered_matrix_indexes(overlap: np.ndarray, threshold: int = IMAGE_THRESHOLD_VALUE) -> np.ndarray:
+    def get_filtered_matrix_indexes(overlap: np.ndarray,
+                                    threshold: int = IMAGE_THRESHOLD_VALUE) -> Tuple[List[int], List[int]]:
         """Return indexes of pixels with larger than passed value"""
 
         indexes = []
-        # y_indexes = []
-        # x_indexes = []
+        y_indexes = []
+        x_indexes = []
 
         for i in np.ndindex(overlap.shape):
             if overlap[i] > threshold:
-                # y_indexes += [i[0]]
-                # x_indexes += [i[1]]
+                y_indexes += [i[0]]
+                x_indexes += [i[1]]
                 indexes += [i]
 
-        print(f"Symbols have {len(overlap) * len(overlap[0]) } total pixels") if DEBUG_PRINT else None
-        print(f"Symbols have {len(indexes)} overlapping pixels") if DEBUG_PRINT else None
+        print(f"Symbols have {len(overlap) * len(overlap[0])} total pixels")\
+            if DEBUG_PRINT else None
+        print(f"Symbols have {len(y_indexes)} overlapping pixels")\
+            if DEBUG_PRINT else None
 
         # indexes_np = np.array(indexes, dtype=np.dtype('uint8, uint8'))
         indexes_np_idk = np.array(indexes, dtype=np.uint8)
@@ -100,4 +103,5 @@ class ImageLoader:
         # print(indexes_np_idk)
         # print(indexes_np_idk.shape)
 
+        # return y_indexes, x_indexes
         return indexes_np_idk
