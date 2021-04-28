@@ -15,6 +15,13 @@ class OCRBruteForce(OCRAlgorithm):
     def calculate_for_k_pixels(self, pixel_count: int, y_index_array: List[int], x_index_array: List[int])\
             -> Tuple[bool, Tuple[Tuple[Any, ...], Tuple[Any, ...]]]:
         """Tries all possible solutions for a given number of chosen pixels."""
+        if pixel_count <= 0 or pixel_count >= len(y_index_array):
+            raise Exception("Incorrect number of chosen pixels")
+
+        if (y_index_array) != len(x_index_array):
+            raise Exception("Index arrays have different lenght")
+
+        # super().shuffle_index_arrays(y_index_array, x_index_array)
 
         # creates iterators which generate all possible combinations of a given length
         y_comb = combinations(y_index_array, pixel_count)
@@ -40,7 +47,7 @@ class OCRBruteForce(OCRAlgorithm):
                 if fitness == MAX_FITNESS:
                     break
 
-        print(f"Comb count: {comb_count}") if DEBUG_PRINT else None
-        print(f"best_fitness: {best_fitness}") if DEBUG_PRINT else None
+        print(f"Comb count: {comb_count}")
+        print(f"best_fitness: {best_fitness}")
         self.plotter.add_record(best_fitness)
         return best_fitness == MAX_FITNESS, best_combination

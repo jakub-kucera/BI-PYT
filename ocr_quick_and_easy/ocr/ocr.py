@@ -1,3 +1,4 @@
+import random
 import time
 from typing import List, Tuple, Any, Callable, Type
 import numpy as np
@@ -16,15 +17,14 @@ class OCR:
                  plotter: Plotter = Plotter("None"),
                  dataset_directory: str = "Datasets/dataset/"):
         self.array_symbols = ImageLoader.load_symbols(dataset_directory=dataset_directory)
-        self.fitness_calculator = PixelFitnessCalculator(self.array_symbols)
-
-        self.plotter = plotter
-
         self.symbol_overlap = ImageLoader.create_overlap_distinct(symbols=self.array_symbols)
         self.overlapping_indexes = ImageLoader.get_filtered_matrix_indexes(overlap=self.symbol_overlap)
         self.total_overlap_pixel_count = len(self.overlapping_indexes)
 
-    def get_shuffled_index_arrays(self):
+        self.plotter = plotter
+        self.fitness_calculator = PixelFitnessCalculator(self.array_symbols)
+
+    def get_shuffled_index_arrays(self) -> Tuple[List[int], List[int]]:
         """Splits array of indexes into two arrays, each with only one of those indexes"""
 
         # y_indexes, x_indexes = np.hsplit(self.overlapping_indexes, 2)
@@ -40,18 +40,23 @@ class OCR:
         ocr_algorithm: OCRAlgorithm = algorithm_type(fitness_calculator=self.fitness_calculator,
                                                      plotter=self.plotter)
 
-        y_indexes, x_indexes = self.get_shuffled_index_arrays()
+        # random.seed(RANDOM_SEED)
+        # y_indexes, x_indexes = self.get_shuffled_index_arrays()
+        y_indexes, x_indexes = self.overlapping_indexes
 
         print(y_indexes) if DEBUG_PRINT else None
         print(x_indexes) if DEBUG_PRINT else None
-        print(y_indexes.shape) if DEBUG_PRINT else None
-        print(x_indexes.shape) if DEBUG_PRINT else None
+        print(len(y_indexes)) if DEBUG_PRINT else None
+        print(len(x_indexes)) if DEBUG_PRINT else None
 
         print(y_indexes[0]) if DEBUG_PRINT else None
         best_combination = None
 
         # for pixel_count in range(1, len(self.overlapping_indexes)):
-        for pixel_count in range(1, 3):
+        # -24, -23, -104, -599
+        #
+        for pixel_count in range(1, 5):
+            # random.seed(RANDOM_SEED)
             print(f"Starting testing {pixel_count} pixels.")
             start = time.time()
             found_solution, best_combination = ocr_algorithm.calculate_for_k_pixels(pixel_count=pixel_count,

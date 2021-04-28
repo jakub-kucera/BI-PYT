@@ -2,6 +2,7 @@
 from config import DEFAULT_DATASET_ADVANCED, DEFAULT_DATASET
 from ocr.algorithm import OCRAlgorithm
 from ocr.bruteforce import OCRBruteForce
+from ocr.genetic import OCRGenetic
 from ocr.ocr import OCR
 from ocr.plotter import Plotter
 
@@ -12,7 +13,8 @@ def main(dataset_directory: str = DEFAULT_DATASET):
     plotter = Plotter(dataset_directory)
     ocrko = OCR(plotter=plotter, dataset_directory=dataset_directory)
 
-    ocrko.calculate(algorithm_type=OCRBruteForce)
+    ocrko.calculate(algorithm_type=OCRGenetic)
+    # ocrko.calculate(algorithm_type=OCRBruteForce)
     plotter.show()
 
 
