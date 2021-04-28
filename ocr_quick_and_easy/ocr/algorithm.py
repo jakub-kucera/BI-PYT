@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 import numpy as np
 from typing import Tuple, Any, List
 
+from config import RANDOM_SEED
 from ocr.fitness import PixelFitnessCalculator
 from ocr.plotter import Plotter
 
@@ -15,3 +16,8 @@ class OCRAlgorithm(ABC):
     def calculate_for_k_pixels(self, pixel_count: int, y_index_array: List[int], x_index_array: List[int])\
             -> Tuple[bool, Tuple[Tuple[Any, ...], Tuple[Any, ...]]]:
         pass
+
+    @staticmethod
+    def shuffle_index_arrays(y_indexes: List[int], x_indexes: List[int], shuffle_seed: int = RANDOM_SEED):
+        np.random.default_rng(shuffle_seed).shuffle(y_indexes)
+        np.random.default_rng(shuffle_seed).shuffle(x_indexes)

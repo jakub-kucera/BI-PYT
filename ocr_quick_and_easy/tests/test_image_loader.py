@@ -146,27 +146,27 @@ def test_create_overlap_distinct_error(symbols: List[np.ndarray]):
     (
             np.array([[0, 0], [0, 0]], dtype=np.uint8),
             127,
-            np.array([], dtype=np.uint8)
+            ([], [])
     ),
     (
             np.array([[255, 255], [255, 255]], dtype=np.uint8),
             127,
-            np.array([[0, 0], [0, 1], [1, 0], [1, 1]], dtype=np.uint8)
+            ([0, 0, 1, 1], [0, 1, 0, 1])
     ),
     (
             np.array([[0, 255], [255, 0]], dtype=np.uint8),
             127,
-            np.array([[0, 1], [1, 0]], dtype=np.uint8)
+            ([0, 1], [1, 0])
     ),
     (
             np.array([[0, 255], [128, 126]], dtype=np.uint8),
             127,
-            np.array([[0, 1], [1, 0]], dtype=np.uint8)
+            ([0, 1], [1, 0])
     ),
 
 ])
 def test_get_filtered_matrix_indexes(overlap: np.ndarray, threshold: int, indexes: np.ndarray):
     overlapping_indexes = ImageLoader.get_filtered_matrix_indexes(overlap=overlap,
                                                                   threshold=threshold)
-    assert (overlapping_indexes == indexes).all()
-    assert np.array_equal(overlapping_indexes, indexes)
+    assert overlapping_indexes == indexes
+    # assert np.array_equal(overlapping_indexes, indexes)
