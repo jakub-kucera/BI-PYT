@@ -1,3 +1,4 @@
+import os
 import pathlib
 from typing import List
 import numpy as np
@@ -14,9 +15,18 @@ class ImageLoader:
     def load_symbols(dataset_directory: str = DEFAULT_DATASET) -> List[np.ndarray]:
         """Converts all images from a given directory into arrays"""
 
+        # various checks for dataset directory
+        if not os.path.exists(dataset_directory):
+            raise Exception(f"{dataset_directory} does not exist")
+
+        if not os.path.isdir(dataset_directory):
+            raise Exception(f"{dataset_directory} is not a directory")
+
+        if not os.listdir(dataset_directory):
+            raise Exception(f"Directory {dataset_directory} is empty")
+
         dataset_file = pathlib.Path(dataset_directory)
         symbols = []
-
         img_size = None
 
         # goes through all files in directory
@@ -28,8 +38,7 @@ class ImageLoader:
                 if img_size is None:
                     img_size = img.size
                 elif img_size != img.size:
-                    print(f"Image {symbol_path} has a different dimensions. ")
-                    continue
+                    raise ValueError(f"Image {symbol_path} has a different dimensions. ")
 
                 array_flattened = np.array(img.getdata(), dtype=np.uint8)
                 array = np.resize(array_flattened, (img.size[0], img.size[1]))
@@ -40,13 +49,28 @@ class ImageLoader:
         return symbols
 
     @staticmethod
-    def create_overlap(symbols: List[np.ndarray]) -> np.ndarray:
-        """Creates a new array indicating value overlap of all given arrays"""
+    def create_overlap_distinct(symbols: List[np.ndarray]) -> np.ndarray:
+        """Creates a new array indicating value overlap of distinct pixels of all given arrays"""
+        image_shape = symbols[0].shape
 
-        overlap = np.zeros(symbols[0].shape)
+        overlap_max = np.zeros(symbols[0].shape, dtype=np.uint8)
+        overlap_min = np.full(symbols[0].shape, fill_value=255, dtype=np.uint8)
 
         for symbol in symbols:
-            overlap = np.maximum(overlap, symbol)
+            if symbol.shape != image_shape:
+                raise Exception("symbols in array have variable shape")
+
+            overlap_max = np.maximum(overlap_max, symbol)
+            overlap_min = np.minimum(overlap_min, symbol)
+
+        overlap = np.subtract(overlap_max, overlap_min)
+
+        print("overlap_max") if DEBUG_PRINT else None
+        print(overlap_max) if DEBUG_PRINT else None
+        print("overlap_min") if DEBUG_PRINT else None
+        print(overlap_min) if DEBUG_PRINT else None
+        print("overlap") if DEBUG_PRINT else None
+        print(overlap) if DEBUG_PRINT else None
 
         return overlap
 
@@ -64,12 +88,16 @@ class ImageLoader:
                 # x_indexes += [i[1]]
                 indexes += [i]
 
+        print(f"Symbols have {len(overlap) * len(overlap[0]) } total pixels") if DEBUG_PRINT else None
+        print(f"Symbols have {len(indexes)} overlapping pixels") if DEBUG_PRINT else None
+
         # indexes_np = np.array(indexes, dtype=np.dtype('uint8, uint8'))
-        indexes_np_idk = np.array(indexes, dtype=np.dtype('uint8'))
+        indexes_np_idk = np.array(indexes, dtype=np.uint8)
 
         # print("indexes_np")
         # print(indexes_np)
         # print("indexes_np_idk")
         # print(indexes_np_idk)
+        # print(indexes_np_idk.shape)
 
         return indexes_np_idk

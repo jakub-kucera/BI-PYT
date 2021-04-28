@@ -13,14 +13,14 @@ from ocr.plotter import Plotter
 class OCR:
     """Class that calculates a chooses the minimal amount of pixels needed to distinguish """
 
-    def __init__(self, plotter: Plotter = Plotter(), dataset_directory: str = "Datasets/dataset/"):
+    def __init__(self, plotter: Plotter = Plotter("None"), dataset_directory: str = "Datasets/dataset/"):
         # self.img_loader = ImageLoader()
         # load_symbols()
         # array_symbols = load_symbols("Datasets/written_hiragana_dataset/")
         self.array_symbols = ImageLoader.load_symbols(dataset_directory=dataset_directory)
         self.symbol_count = len(self.array_symbols)
         # todo clean values
-        self.symbol_overlap = ImageLoader.create_overlap(symbols=self.array_symbols)
+        self.symbol_overlap = ImageLoader.create_overlap_distinct(symbols=self.array_symbols)
         self.overlapping_indexes = ImageLoader.get_filtered_matrix_indexes(overlap=self.symbol_overlap)
 
         # self.total_pixel_count = self.overlapping_indexes.shape[0] * self.overlapping_indexes.shape[1]
@@ -115,8 +115,8 @@ class OCR:
         print(y_indexes[0]) if DEBUG_PRINT else None
 
         # self.bruteforce_k_pixels(pixel_count=2, y_index_array=y_indexes, x_index_array=x_indexes)
-        # for p in range(1, len(self.overlapping_indexes)):
-        for p in range(1, 4):
+        for p in range(1, len(self.overlapping_indexes)):
+        # for p in range(1, 3):
             print(f"Starting testing {p} pixels.")
             start = time.time()
             found_solution, best_combination = self.bruteforce_k_pixels(pixel_count=p, y_index_array=y_indexes,

@@ -2,6 +2,7 @@ numpy
 matplotlib
 pygame
 pytest
+pytest-mock
 Pillow
 flake8
 mypy
