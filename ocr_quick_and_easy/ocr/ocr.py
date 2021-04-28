@@ -27,7 +27,8 @@ class OCR:
     def get_shuffled_index_arrays(self):
         """Splits array of indexes into two arrays, each with only one of those indexes"""
 
-        y_indexes, x_indexes = np.hsplit(self.overlapping_indexes, 2)
+        # y_indexes, x_indexes = np.hsplit(self.overlapping_indexes, 2)
+        y_indexes, x_indexes = self.overlapping_indexes
         np.random.default_rng(RANDOM_SEED).shuffle(y_indexes)
         np.random.default_rng(RANDOM_SEED).shuffle(x_indexes)
 

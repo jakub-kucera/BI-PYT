@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 import numpy as np
-from typing import Tuple, Any
+from typing import Tuple, Any, List
 
 from ocr.fitness import PixelFitnessCalculator
 from ocr.plotter import Plotter
@@ -12,6 +12,6 @@ class OCRAlgorithm(ABC):
         self.plotter = plotter
 
     @abstractmethod
-    def calculate_for_k_pixels(self, pixel_count: int, y_index_array: np.ndarray, x_index_array: np.ndarray)\
+    def calculate_for_k_pixels(self, pixel_count: int, y_index_array: List[int], x_index_array: List[int])\
             -> Tuple[bool, Tuple[Tuple[Any, ...], Tuple[Any, ...]]]:
         pass
