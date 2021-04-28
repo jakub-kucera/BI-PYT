@@ -4,5 +4,6 @@ NULL_FITNESS = 1
 
 IMAGE_THRESHOLD_VALUE = 127
 DEFAULT_DATASET = "Datasets/dataset/"
+DEFAULT_DATASET_ADVANCED = "Datasets/written_hiragana_dataset/"
 
 DEBUG_PRINT = False
