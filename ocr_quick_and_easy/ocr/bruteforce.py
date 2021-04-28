@@ -12,7 +12,7 @@ class OCRBruteForce(OCRAlgorithm):
     def __init__(self, fitness_calculator: PixelFitnessCalculator, plotter: Plotter):
         super().__init__(fitness_calculator, plotter)
 
-    def calculate_for_k_pixels(self, pixel_count: int, y_index_array: np.ndarray, x_index_array: np.ndarray)\
+    def calculate_for_k_pixels(self, pixel_count: int, y_index_array: List[int], x_index_array: List[int])\
             -> Tuple[bool, Tuple[Tuple[Any, ...], Tuple[Any, ...]]]:
         """Tries all possible solutions for a given number of chosen pixels."""
 

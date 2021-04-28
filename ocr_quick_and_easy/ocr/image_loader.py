@@ -103,5 +103,5 @@ class ImageLoader:
         # print(indexes_np_idk)
         # print(indexes_np_idk.shape)
 
-        # return y_indexes, x_indexes
-        return indexes_np_idk
+        return y_indexes, x_indexes
+        # return indexes_np_idk
