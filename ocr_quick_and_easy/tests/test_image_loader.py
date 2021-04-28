@@ -2,7 +2,6 @@ import pytest
 import numpy as np
 from typing import List
 
-from config import DEFAULT_DATASET, DEFAULT_DATASET_ADVANCED
 from ocr.image_loader import ImageLoader
 
 TEST_DATASETS = "tests/test_datasets/"
@@ -167,6 +166,7 @@ def test_create_overlap_distinct_error(symbols: List[np.ndarray]):
 
 ])
 def test_get_filtered_matrix_indexes(overlap: np.ndarray, threshold: int, indexes: np.ndarray):
-    overlapping_indexes = ImageLoader.get_filtered_matrix_indexes(overlap=overlap, threshold=threshold)
+    overlapping_indexes = ImageLoader.get_filtered_matrix_indexes(overlap=overlap,
+                                                                  threshold=threshold)
     assert (overlapping_indexes == indexes).all()
     assert np.array_equal(overlapping_indexes, indexes)
