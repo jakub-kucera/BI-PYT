@@ -7,8 +7,8 @@ from ocr.ocr import OCR
 from ocr.plotter import Plotter
 
 
-# def main(dataset_directory: str = DEFAULT_DATASET_ADVANCED):
-def main(dataset_directory: str = DEFAULT_DATASET):
+def main(dataset_directory: str = DEFAULT_DATASET_ADVANCED):
+# def main(dataset_directory: str = DEFAULT_DATASET):
     print("Start")
     plotter = Plotter(dataset_directory)
     ocrko = OCR(plotter=plotter, dataset_directory=dataset_directory)

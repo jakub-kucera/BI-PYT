@@ -16,15 +16,15 @@ class PixelFitnessCalculator:
         """"Invert fitness fot it to be in correct format."""
         return -(inverted_fitness - 1)
 
-    def calculate_fitness(self, y_indexes: Tuple[Any, ...], x_indexes: Tuple[Any, ...]) -> int:
+    def calculate_fitness(self, indexes_array: np.ndarray) -> int:
         """Calculates fitness for a given indexes of chosen pixels"""
 
-        if len(y_indexes) != len(x_indexes):
-            raise ValueError(f"y_indexes({y_indexes}) != x_indexes({x_indexes})")
+        if indexes_array[0].size != 2:
+            raise ValueError(f"Incorrect indexes_array shape ({indexes_array[0].size} != 2), \n {indexes_array}")
 
         hashes = []
         for i in range(self.symbol_count):
-            hashed_array = xxh3_64(self.symbols[i][y_indexes, x_indexes]).hexdigest()
+            hashed_array = xxh3_64(self.symbols[i][indexes_array.T[0], indexes_array.T[1]]).hexdigest()
             hashes += [hashed_array]
 
         print(Counter(hashes)) if DEBUG_PRINT else None

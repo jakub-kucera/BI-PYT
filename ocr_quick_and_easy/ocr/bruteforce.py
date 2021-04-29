@@ -12,36 +12,33 @@ class OCRBruteForce(OCRAlgorithm):
     def __init__(self, fitness_calculator: PixelFitnessCalculator, plotter: Plotter):
         super().__init__(fitness_calculator, plotter)
 
-    def calculate_for_k_pixels(self, pixel_count: int, y_index_array: List[int], x_index_array: List[int])\
-            -> Tuple[bool, Tuple[Tuple[Any, ...], Tuple[Any, ...]]]:
+    def calculate_for_k_pixels(self, pixel_count: int, indexes_array: np.ndarray) -> Tuple[bool, np.ndarray]:
         """Tries all possible solutions for a given number of chosen pixels."""
-        if pixel_count <= 0 or pixel_count >= len(y_index_array):
+
+        if pixel_count <= 0 or pixel_count >= indexes_array.size:
             raise Exception("Incorrect number of chosen pixels")
 
-        if (y_index_array) != len(x_index_array):
-            raise Exception("Index arrays have different lenght")
-
-        # super().shuffle_index_arrays(y_index_array, x_index_array)
+        if indexes_array[0].size != 2:
+            raise Exception("Index arrays have different length")
 
         # creates iterators which generate all possible combinations of a given length
-        y_comb = combinations(y_index_array, pixel_count)
-        x_comb = combinations(x_index_array, pixel_count)
+        index_combinations = combinations(indexes_array, pixel_count)
 
         best_fitness = NULL_FITNESS
-        best_combination: Tuple[Tuple[Any, ...], Tuple[Any, ...]] = ((), ())
+        best_combination: np.ndarray = np.empty(shape=(0, 2), dtype=np.uint8)
         comb_count = 0
 
         # goes through all the elements
-        for y, x in zip(y_comb, x_comb):
+        for index_combination in (np.array(comb) for comb in index_combinations):
             comb_count += 1
 
             # calculates fitness for the current combinations of chosen pixels
-            fitness = self.fitness_calculator.calculate_fitness(y, x)
+            fitness = self.fitness_calculator.calculate_fitness(index_combination)
 
             # update current best fitness, if higher
             if best_fitness == NULL_FITNESS or fitness > best_fitness:
                 best_fitness = fitness
-                best_combination = (y, x)
+                best_combination = index_combination
 
                 # stop when desired final solution has been found
                 if fitness == MAX_FITNESS:

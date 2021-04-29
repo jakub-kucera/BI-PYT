@@ -13,11 +13,9 @@ class OCRAlgorithm(ABC):
         self.plotter = plotter
 
     @abstractmethod
-    def calculate_for_k_pixels(self, pixel_count: int, y_index_array: List[int], x_index_array: List[int])\
-            -> Tuple[bool, Tuple[Tuple[Any, ...], Tuple[Any, ...]]]:
+    def calculate_for_k_pixels(self, pixel_count: int, indexes_array: np.ndarray) -> Tuple[bool, np.ndarray]:
         pass
 
     @staticmethod
-    def shuffle_index_arrays(y_indexes: List[int], x_indexes: List[int], shuffle_seed: int = RANDOM_SEED):
-        np.random.default_rng(shuffle_seed).shuffle(y_indexes)
-        np.random.default_rng(shuffle_seed).shuffle(x_indexes)
+    def shuffle_index_array(indexes_array, shuffle_seed: int = RANDOM_SEED):
+        np.random.default_rng(shuffle_seed).shuffle(indexes_array)
