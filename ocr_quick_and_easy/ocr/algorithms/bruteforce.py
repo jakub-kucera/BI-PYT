@@ -1,28 +1,24 @@
 import numpy as np
-from typing import List, Tuple, Any
+from typing import Tuple
 from itertools import combinations
 
 from config import *
-from ocr.algorithm import OCRAlgorithm
-from ocr.fitness import PixelFitnessCalculator
-from ocr.plotter import Plotter
+from ocr.algorithms.algorithm import OCRAlgorithm
+from ocr.utils.fitness import PixelFitnessCalculator
+from ocr.utils.plotter import Plotter
 
 
 class OCRBruteForce(OCRAlgorithm):
-    def __init__(self, fitness_calculator: PixelFitnessCalculator, plotter: Plotter):
-        super().__init__(fitness_calculator, plotter)
+    """Class for calculation pixel combination using bruteforce"""
+    def __init__(self, pixel_count: int, indexes_array: np.ndarray, fitness_calculator: PixelFitnessCalculator,
+                 plotter: Plotter):
+        super().__init__(pixel_count, indexes_array, fitness_calculator, plotter)
 
-    def calculate_for_k_pixels(self, pixel_count: int, indexes_array: np.ndarray) -> Tuple[bool, np.ndarray]:
+    def calculate_for_k_pixels(self) -> Tuple[bool, np.ndarray]:
         """Tries all possible solutions for a given number of chosen pixels."""
 
-        if pixel_count <= 0 or pixel_count >= indexes_array.size:
-            raise Exception("Incorrect number of chosen pixels")
-
-        if indexes_array[0].size != 2:
-            raise Exception("Index arrays have different length")
-
-        # creates iterators which generate all possible combinations of a given length
-        index_combinations = combinations(indexes_array, pixel_count)
+        # creates iterator which generate all possible combinations of a given length
+        index_combinations = combinations(self.indexes_array, self.pixel_count)
 
         best_fitness = NULL_FITNESS
         best_combination: np.ndarray = np.empty(shape=(0, 2), dtype=np.uint8)

@@ -1,12 +1,14 @@
 import numpy as np
 from collections import Counter
 from xxhash import xxh3_64
-from typing import Tuple, Any, List
+from typing import List
 
 from config import *
 
 
 class PixelFitnessCalculator:
+    """Class that takes care of all necessary calculations concerning fitness"""
+
     def __init__(self, symbols: List[np.ndarray]):
         self.symbols = symbols
         self.symbol_count = len(self.symbols)
