@@ -1,13 +1,13 @@
 import random
 
 import numpy as np
-from typing import List, Tuple, Any
+from typing import List, Tuple
 from itertools import combinations
 
 from config import *
-from ocr.algorithm import OCRAlgorithm
-from ocr.fitness import PixelFitnessCalculator
-from ocr.plotter import Plotter
+from ocr.algorithms.algorithm import OCRAlgorithm
+from ocr.utils.fitness import PixelFitnessCalculator
+from ocr.utils.plotter import Plotter
 
 
 class OCRIndividual:
@@ -20,20 +20,26 @@ class OCRIndividual:
 
 
 class OCRGenetic(OCRAlgorithm):
-    def __init__(self, fitness_calculator: PixelFitnessCalculator, plotter: Plotter):
-        super().__init__(fitness_calculator, plotter)
+    """Class for calculation pixel combination using genetic algorithms"""
+    def __init__(self, pixel_count: int, indexes_array: np.ndarray,
+                 fitness_calculator: PixelFitnessCalculator, plotter: Plotter):
+        super().__init__(pixel_count, indexes_array, fitness_calculator, plotter)
         self.population: List[OCRIndividual] = []
-        self.mutation_probability = 0
-        self.pixel_count = 0
+        self.mutation_probability = 0.0
+        self.mutate_swap_count = 0
 
-    def create_first_generation(self, indexes_array: np.ndarray):
+    def create_first_generation(self):
+        """Creates an initial generation of randomly generated combinations of pixels"""
 
-        super().shuffle_index_array(indexes_array, RANDOM_SEED)
+        # randomly shuffles array of indexes
+        self.shuffle_index_array(self.indexes_array, RANDOM_SEED)
 
-        index_combinations = combinations(indexes_array, self.pixel_count)
+        # creates iterator which can generate all possible combinations of a given length
+        index_combinations = combinations(self.indexes_array, self.pixel_count)
         comb_count = 0
 
         population = []
+        # generates new index combinations
         for index_combination in (np.array(comb) for comb in index_combinations):
             calculated_fitness = self.fitness_calculator.calculate_fitness(index_combination)
             population += [OCRIndividual(index_combination, calculated_fitness)]
@@ -48,12 +54,14 @@ class OCRGenetic(OCRAlgorithm):
         self.population = population
 
     def recalculate_fitness(self):
+        """Calculates fitness for each individual in a new generations"""
         for individual in self.population:
             individual.fitness = self.fitness_calculator.calculate_fitness(individual.indexes)
 
         self.population.sort(key=lambda x: x.fitness, reverse=True)
 
     def select_new_generation(self):
+        """Selects individual combinations of indexes from the old generation using the tournament selection."""
         new_generation = []
         for _ in range(POPULATION_SIZE):
             a = random.randint(0, POPULATION_SIZE-1)
@@ -63,19 +71,14 @@ class OCRGenetic(OCRAlgorithm):
         self.population = new_generation
 
     def crossover(self):
-        child_generation = []
+        """Crosses over each two individual pixel combinations"""
 
-        # print(f"parents count {len(self.population)}")
+        child_generation = []
 
         for i in range(POPULATION_SIZE):
             j = i-1
 
             # todo write more efficiently
-
-            # print("self.population[i]")
-            # print(self.population[i].indexes)
-            # print("self.population[j]")
-            # print(self.population[j].indexes)
 
             concatenated_array = np.concatenate((self.population[i].indexes, self.population[j].indexes))
             available_indexes_array = np.unique(concatenated_array, axis=0)
@@ -85,15 +88,28 @@ class OCRGenetic(OCRAlgorithm):
             child_generation += [OCRIndividual(new_array)]
 
         self.population = child_generation
-        # print(f"children count {len(child_generation)}")
 
-    def calculate_for_k_pixels(self, pixel_count: int, indexes_array: np.ndarray) -> Tuple[bool, np.ndarray]:
-        """Tries all possible solutions for a given number of chosen pixels."""
+    def mutate(self):
+        """Randomly mutates individuals by replacing pixels"""
+
+        for individual in self.population:
+            if self.mutation_probability > np.random.uniform():
+                for _ in np.random.choice(self.pixel_count, 1):  # todo <-- delete
+                    for index_new in (np.random.choice(len(self.indexes_array), 1) for x in range(len(self.indexes_array))):
+                        if self.indexes_array[index_new] not in individual.indexes:
+                            index_old = np.random.choice(self.pixel_count, 1)
+                            # print(f"Swapping from \n{individual.indexes[index_old]} to {self.indexes_array[index_new]}")
+                            individual.indexes[index_old] = self.indexes_array[index_new]
+                            self.mutate_swap_count += 1
+                            break  # todo change
+        # self.mutation_probability = 0.0
+
+    def calculate_for_k_pixels(self) -> Tuple[bool, np.ndarray]:
+        """Uses genetic algorithm to find a combination of pixels."""
         self.population = []
-        self.mutation_probability = 0
-        self.pixel_count = pixel_count
+        self.mutation_probability = 0.0
 
-        self.create_first_generation(indexes_array)
+        self.create_first_generation()
         self.recalculate_fitness()
 
         best_fitness = NULL_FITNESS
@@ -107,28 +123,23 @@ class OCRGenetic(OCRAlgorithm):
             # crossover
             self.crossover()
 
+            # mutate
+            if self.mutation_probability > 0.0:
+                self.mutate()
+                # pass
+
             # recalculate
             self.recalculate_fitness()
 
-            # mutate
-            if self.mutation_probability > 0:
-                # todo mutate
-                pass
-
+            # get best combinations of current generation
             fitness = self.population[0].fitness
             self.plotter.add_record(fitness)
 
-            # print
-            # print(f"Generation number {gen}:")
-            # print(f"Local good fitness: {fitness}")
-            # print(f"Local good combination: {self.population[0].indexes}")
-            # print(f"y_indexes: {self.population[0].y_indexes}")
-            # print(f"x_indexes: {self.population[0].x_indexes}")
-
             if last_fitness > fitness:
                 self.mutation_probability += MUTATION_INCREASE_STEP
+            last_fitness = fitness
 
-            # check
+            # check if fitness has improved
             if best_fitness == NULL_FITNESS or fitness > best_fitness:
                 best_fitness = fitness
                 best_combination = self.population[0].indexes.copy()
@@ -138,4 +149,5 @@ class OCRGenetic(OCRAlgorithm):
                     print("Found best fitness")
                     break
 
+        print(f"For {self.pixel_count} pixels, mutation swap count: {self.mutate_swap_count}")
         return best_fitness == MAX_FITNESS, best_combination

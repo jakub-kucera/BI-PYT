@@ -9,13 +9,13 @@ from config import IMAGE_THRESHOLD_VALUE, DEFAULT_DATASET, DEBUG_PRINT
 
 
 class ImageLoader:
-    """Class that takes cares of loading symbols from files"""
+    """Class that takes cares of loading symbols from files and their processing"""
 
     @staticmethod
     def covert_symbols_bool(symbols: List[np.ndarray], threshold: int) -> List[np.ndarray]:
+        """Converts a 2D array of integers into a new 2D array of boolean values"""
         converted_symbols = []
         for symbol in symbols:
-            # converted_symbols += [np.array(symbol, dtype=np.bool8)]
             converted_symbols += [np.vectorize(lambda x: x > threshold)(symbol)]
         return converted_symbols
 
@@ -55,6 +55,7 @@ class ImageLoader:
 
                 symbols += [array_inverted]
 
+        # return symbols
         return ImageLoader.covert_symbols_bool(symbols, threshold)
 
     @staticmethod
@@ -74,13 +75,6 @@ class ImageLoader:
 
         overlap = np.subtract(overlap_max, overlap_min)
 
-        print("overlap_max") if DEBUG_PRINT else None
-        print(overlap_max) if DEBUG_PRINT else None
-        print("overlap_min") if DEBUG_PRINT else None
-        print(overlap_min) if DEBUG_PRINT else None
-        print("overlap") if DEBUG_PRINT else None
-        print(overlap) if DEBUG_PRINT else None
-
         return overlap
 
     @staticmethod
@@ -89,19 +83,18 @@ class ImageLoader:
         # threshold: int = IMAGE_THRESHOLD_VALUE) -> Tuple[List[int], List[int]]:
 
         indexes = []
-        y_indexes = []
-        x_indexes = []
+        # y_indexes = []
+        # x_indexes = []
 
         for i in np.ndindex(overlap.shape):
             if overlap[i]:
-                y_indexes += [i[0]]
-                x_indexes += [i[1]]
+                # y_indexes += [i[0]]
+                # x_indexes += [i[1]]
                 indexes += [i]
 
-        print(f"Symbols have {len(overlap) * len(overlap[0])} total pixels") \
-            if DEBUG_PRINT else None
-        print(f"Symbols have {len(y_indexes)} overlapping pixels") \
-            if DEBUG_PRINT else None
+        if DEBUG_PRINT:
+            print(f"Symbols have {len(overlap) * len(overlap[0])} total pixels")
+            print(f"Symbols have {len(indexes)} overlapping pixels")
 
         # indexes_np = np.array(indexes, dtype=np.dtype('uint8, uint8'))
         indexes_np = np.array(indexes, dtype=np.uint8)

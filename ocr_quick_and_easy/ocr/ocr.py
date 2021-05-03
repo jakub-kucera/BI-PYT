@@ -1,14 +1,10 @@
-import random
-import sys
 import time
-from typing import List, Tuple, Any, Callable, Type
-import numpy as np
+from typing import Type
 
-from config import *
-from ocr.algorithm import OCRAlgorithm
-from ocr.fitness import PixelFitnessCalculator
-from ocr.image_loader import ImageLoader
-from ocr.plotter import Plotter
+from ocr.algorithms.algorithm import OCRAlgorithm
+from ocr.utils.fitness import PixelFitnessCalculator
+from ocr.utils.image_loader import ImageLoader
+from ocr.utils.plotter import Plotter
 
 
 class OCR:
@@ -29,21 +25,35 @@ class OCR:
     def calculate(self, algorithm_type: Type[OCRAlgorithm]):
         """Runs calculation using provided method for increasing number of chosen pixels."""
 
-        ocr_algorithm: OCRAlgorithm = algorithm_type(fitness_calculator=self.fitness_calculator,
-                                                     plotter=self.plotter)
+        # ocr_algorithm: OCRAlgorithm = algorithm_type(fitness_calculator=self.fitness_calculator,
+        #                                              plotter=self.plotter)
 
         # random.seed(0)
         # np.random.seed(RANDOM_SEED)
 
         best_combination = None
 
-        # for pixel_count in range(1, 3):
-        for pixel_count in range(1, len(self.overlapping_indexes)):
+        # todo calculate number of pixels from number of symbols
+        #  only run for this number
+        #  genetic: increase generation size, number of generations inf?,
+        #  smaller mutation. Only on pixels?
+        #  make smaller changes using crossover
+        #  decrease mutation probability
+        # base some parameters on pixel / symbol count
+
+        # for pixel_count in range(6, 7):
+        for pixel_count in range(100):
+        # for pixel_count in range(1, len(self.overlapping_indexes)):
             # random.seed(RANDOM_SEED)
             print(f"Starting testing {pixel_count} pixels.")
             start = time.time()
-            found_solution, best_combination = ocr_algorithm.calculate_for_k_pixels(pixel_count=pixel_count,
-                                                                                    indexes_array=self.overlapping_indexes.copy())
+
+            ocr_algorithm: OCRAlgorithm = algorithm_type(pixel_count=5,
+                                                         indexes_array=self.overlapping_indexes.copy(),
+                                                         fitness_calculator=self.fitness_calculator,
+                                                         plotter=self.plotter)
+
+            found_solution, best_combination = ocr_algorithm.calculate_for_k_pixels()
             total = time.time() - start
             print(f"Elapsed time = {total}")
 
