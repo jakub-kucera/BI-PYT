@@ -1,12 +1,12 @@
 import random
 
-import numpy as np
-from typing import List, Tuple
+from typing import List
 from itertools import combinations
 
 from config import *
 from ocr.algorithms.algorithm import OCRAlgorithm
 from ocr.utils.fitness import PixelFitnessCalculator
+from ocr.gui.sync_painter import SymbolPainter
 from ocr.utils.plotter import Plotter
 
 
@@ -22,8 +22,9 @@ class OCRIndividual:
 class OCRGenetic(OCRAlgorithm):
     """Class for calculation pixel combination using genetic algorithms"""
     def __init__(self, pixel_count: int, indexes_array: np.ndarray,
-                 fitness_calculator: PixelFitnessCalculator, plotter: Plotter):
-        super().__init__(pixel_count, indexes_array, fitness_calculator, plotter)
+                 fitness_calculator: PixelFitnessCalculator,
+                 plotter: Plotter, painter: SymbolPainter):
+        super().__init__(pixel_count, indexes_array, fitness_calculator, plotter, painter)
         self.population: List[OCRIndividual] = []
         self.mutation_probability = 0.0
         self.mutate_swap_count = 0
@@ -91,7 +92,6 @@ class OCRGenetic(OCRAlgorithm):
 
     def mutate(self):
         """Randomly mutates individuals by replacing pixels"""
-
         for individual in self.population:
             if self.mutation_probability > np.random.uniform():
                 for _ in np.random.choice(self.pixel_count, 1):  # todo <-- delete
@@ -134,6 +134,7 @@ class OCRGenetic(OCRAlgorithm):
             # get best combinations of current generation
             fitness = self.population[0].fitness
             self.plotter.add_record(fitness)
+            self.painter.change_chosen_pixels(self.population[0].indexes)
 
             if last_fitness > fitness:
                 self.mutation_probability += MUTATION_INCREASE_STEP

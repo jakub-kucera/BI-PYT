@@ -3,6 +3,7 @@ from typing import Type
 
 from ocr.algorithms.algorithm import OCRAlgorithm
 from ocr.utils.fitness import PixelFitnessCalculator
+from ocr.gui.sync_painter import SymbolPainter
 from ocr.utils.image_loader import ImageLoader
 from ocr.utils.plotter import Plotter
 
@@ -31,6 +32,9 @@ class OCR:
         # random.seed(0)
         # np.random.seed(RANDOM_SEED)
 
+        painter = SymbolPainter(symbols=self.array_symbols)
+        painter.init_painter()
+
         best_combination = None
 
         # todo calculate number of pixels from number of symbols
@@ -51,7 +55,7 @@ class OCR:
             ocr_algorithm: OCRAlgorithm = algorithm_type(pixel_count=5,
                                                          indexes_array=self.overlapping_indexes.copy(),
                                                          fitness_calculator=self.fitness_calculator,
-                                                         plotter=self.plotter)
+                                                         plotter=self.plotter, painter=painter)
 
             found_solution, best_combination = ocr_algorithm.calculate_for_k_pixels()
             total = time.time() - start
