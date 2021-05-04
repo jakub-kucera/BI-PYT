@@ -1,9 +1,13 @@
+import math
 import time
 from typing import Type
 
+import numpy as np
+
 from ocr.algorithms.algorithm import OCRAlgorithm
+from ocr.gui.painter import Painter
+from ocr.gui.sync_painter import SyncPainter
 from ocr.utils.fitness import PixelFitnessCalculator
-from ocr.gui.sync_painter import SymbolPainter
 from ocr.utils.image_loader import ImageLoader
 from ocr.utils.plotter import Plotter
 
@@ -23,7 +27,22 @@ class OCR:
         self.plotter = plotter
         self.fitness_calculator = PixelFitnessCalculator(self.array_symbols)
 
-    def calculate(self, algorithm_type: Type[OCRAlgorithm]):
+    @staticmethod
+    def calculate_pixel_count(symbol_count: int):
+        """Calculates number of pixels that are needed to differentiate between given number of symbols."""
+        return math.ceil(math.log2(symbol_count))
+
+    def paint_only_combinations(self, chosen_pixels: np.ndarray):
+        painter = SyncPainter(symbols=self.array_symbols)
+        painter.init_painter()
+
+        print(f"Fitness: {chosen_pixels}")
+        print(self.fitness_calculator.calculate_fitness(chosen_pixels))
+
+        while True:
+            painter.change_chosen_pixels(chosen_pixels)
+
+    def calculate(self, algorithm_type: Type[OCRAlgorithm], painter_type: Type[Painter]):
         """Runs calculation using provided method for increasing number of chosen pixels."""
 
         # ocr_algorithm: OCRAlgorithm = algorithm_type(fitness_calculator=self.fitness_calculator,
@@ -32,27 +51,34 @@ class OCR:
         # random.seed(0)
         # np.random.seed(RANDOM_SEED)
 
-        painter = SymbolPainter(symbols=self.array_symbols)
+        painter = painter_type(symbols=self.array_symbols)
         painter.init_painter()
-
+        #
         best_combination = None
 
-        # todo calculate number of pixels from number of symbols
+        # todo
         #  only run for this number
         #  genetic: increase generation size, number of generations inf?,
         #  smaller mutation. Only on pixels?
         #  make smaller changes using crossover
-        #  decrease mutation probability
-        # base some parameters on pixel / symbol count
+
+        pixel_count = self.calculate_pixel_count(len(self.array_symbols))
+
+        if pixel_count > len(self.overlapping_indexes):
+            raise Exception("Provided symbols are too similar\
+                                to differentiate between them")
 
         # for pixel_count in range(6, 7):
-        for pixel_count in range(100):
+
+        # for pixel_count in range(pixel_count, len(self.overlapping_indexes)):
         # for pixel_count in range(1, len(self.overlapping_indexes)):
-            # random.seed(RANDOM_SEED)
+        for attempts_pixel_count in range(1):
+            pixel_count = 7
+                # random.seed(RANDOM_SEED)
             print(f"Starting testing {pixel_count} pixels.")
             start = time.time()
 
-            ocr_algorithm: OCRAlgorithm = algorithm_type(pixel_count=5,
+            ocr_algorithm: OCRAlgorithm = algorithm_type(pixel_count=pixel_count,
                                                          indexes_array=self.overlapping_indexes.copy(),
                                                          fitness_calculator=self.fitness_calculator,
                                                          plotter=self.plotter, painter=painter)
@@ -70,5 +96,5 @@ class OCR:
             print("best_combination")
             print(best_combination)
             print("Symbols:")
-            for symbol in self.array_symbols:
-                print(symbol[best_combination.T[0], best_combination.T[1]])
+            # for symbol in self.array_symbols:
+            #     print(symbol[best_combination.T[0], best_combination.T[1]])

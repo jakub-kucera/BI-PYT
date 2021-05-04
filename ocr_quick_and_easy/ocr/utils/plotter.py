@@ -1,6 +1,11 @@
+import json
+import os.path
 from typing import List, Optional
 import numpy as np
 import matplotlib.pyplot as plt
+from PIL import Image
+
+from config import PLOTTER_COUNTER_FILE, OUTPUT_PLOT_IMG_TYPE, OUTPUT_PLOTS_FILE
 
 
 class Plotter:
@@ -39,13 +44,36 @@ class Plotter:
         else:
             self.records += [self.cutoff]
 
+    @staticmethod
+    def get_counter() -> int:
+        counter = 0
+        if os.path.isfile(PLOTTER_COUNTER_FILE):
+            with open(PLOTTER_COUNTER_FILE, 'r') as infile:
+                counter = json.load(infile)['count']
+        return counter
+
+    @staticmethod
+    def write_counter(counter: int):
+        with open(PLOTTER_COUNTER_FILE, 'w') as outfile:
+            json.dump({"count": counter}, outfile)
+
     def show(self, section_width: int = None):
         """Shows the plot"""
 
+        counter = self.get_counter()
+
         self.__set_section_width(section_width)
-        plt.title(self.title)
+        plt.suptitle(self.title)
+        plt.title(f"Result number: {counter}")
         plt.xlabel("Records")
         plt.ylabel("Fitness")
-
         plt.plot(self.records)
+
+        counter += 1
+        output_img = f"{OUTPUT_PLOTS_FILE}/{counter}_plot{OUTPUT_PLOT_IMG_TYPE}"
+        plt.savefig(output_img)
+        self.write_counter(counter)
+
+        # img = Image.open(output_img)
+        # img.show()
         plt.show()
