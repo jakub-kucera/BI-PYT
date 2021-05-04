@@ -1,6 +1,10 @@
-from config import DEFAULT_DATASET, MAX_GENERATIONS
+from config import DEFAULT_DATASET, MAX_GENERATIONS, DEFAULT_DATASET_ADVANCED, DEFAULT_DATASET_SMALL_20, \
+    PLOTTER_COUNTER_FILE
 from ocr.algorithms.bruteforce import OCRBruteForce
 from ocr.algorithms.genetic import OCRGenetic
+from ocr.gui.dummy_painter import DummyPainter
+import json
+from ocr.gui.sync_painter import SyncPainter
 from ocr.ocr import OCR
 
 # def main(dataset_directory: str = DEFAULT_DATASET_ADVANCED):
@@ -8,15 +12,19 @@ from ocr.utils.plotter import Plotter
 
 
 # def main(dataset_directory: str = DEFAULT_DATASET_SMALL_20):
-def main(dataset_directory: str = DEFAULT_DATASET):
+# def main(dataset_directory: str = DEFAULT_DATASET):
+def main(dataset_directory: str = DEFAULT_DATASET_ADVANCED):
     print("Start")
     plotter = Plotter(dataset_directory)
     ocrko = OCR(plotter=plotter, dataset_directory=dataset_directory)
 
-    # ocrko.calculate(algorithm_type=OCRGenetic)
-    ocrko.calculate(algorithm_type=OCRBruteForce)
-    plotter.show(section_width=MAX_GENERATIONS)
-    # plotter.show()
+    # ocrko.calculate(algorithm_type=OCRGenetic, painter_type=SyncPainter)
+    ocrko.calculate(algorithm_type=OCRGenetic, painter_type=DummyPainter)
+    # ocrko.calculate(algorithm_type=OCRBruteForce, painter_type=DummyPainter)
+    # ocrko.calculate(algorithm_type=OCRBruteForce, painter_type=SyncPainter)
+
+    # plotter.show(section_width=MAX_GENERATIONS)
+    plotter.show()
 
 
 if __name__ == '__main__':

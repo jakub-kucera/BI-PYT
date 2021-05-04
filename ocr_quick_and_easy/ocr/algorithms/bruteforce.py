@@ -2,15 +2,16 @@ from itertools import combinations
 
 from config import *
 from ocr.algorithms.algorithm import OCRAlgorithm
+from ocr.gui.painter import Painter
 from ocr.utils.fitness import PixelFitnessCalculator
-from ocr.gui.sync_painter import SymbolPainter
+from ocr.gui.sync_painter import SyncPainter
 from ocr.utils.plotter import Plotter
 
 
 class OCRBruteForce(OCRAlgorithm):
     """Class for calculation pixel combination using bruteforce"""
     def __init__(self, pixel_count: int, indexes_array: np.ndarray, fitness_calculator: PixelFitnessCalculator,
-                 plotter: Plotter, painter: SymbolPainter):
+                 plotter: Plotter, painter: Painter):
         super().__init__(pixel_count, indexes_array, fitness_calculator, plotter, painter)
 
     def calculate_for_k_pixels(self) -> Tuple[bool, np.ndarray]:

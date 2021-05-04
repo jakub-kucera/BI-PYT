@@ -1,28 +1,38 @@
 from typing import Final, Tuple
-
 import numpy as np
 
-RANDOM_SEED: Final[int] = 42
-MAX_FITNESS: Final[int] = 0
-NULL_FITNESS: Final[int] = 1
+#########################################################
+
+POPULATION_SIZE: Final[int] = 100
+MAX_GENERATIONS: Final[int] = 1000
+TOURNAMENT_SIZE_PERCENTAGE: Final[float] = 0.05
+MUTATION_INCREASE_STEP: Final[float] = 0.01
+MUTATE_PIXELS_MAX_PERCENTAGE: Final[float] = 0.8
 
 IMAGE_THRESHOLD_VALUE: Final[int] = 127
+
+#########################################################
+
+MAX_FITNESS: Final[int] = 0
+NULL_FITNESS: Final[int] = 1
+RANDOM_SEED: Final[int] = 42
+
 DEFAULT_DATASET: Final[str] = "Datasets/dataset/"
 DEFAULT_DATASET_SMALL_20: Final[str] = "Datasets/dataset_small_20/"
 DEFAULT_DATASET_ADVANCED: Final[str] = "Datasets/written_hiragana_dataset/"
 
-POPULATION_SIZE: Final[int] = 100
-MAX_GENERATIONS: Final[int] = 100
-TOURNAMENT_SIZE: Final[int] = 2
-MUTATION_INCREASE_STEP: Final[float] = 0.05
-
 WHITE_COLOR: Final[Tuple[int, int, int]] = (255, 255, 255)
 BLACK_COLOR: Final[Tuple[int, int, int]] = (0, 0, 0)
+GREY_COLOR: Final[Tuple[int, int, int]] = (170, 170, 170)
 PIXEL_OUTLINE_COLOR: Final[Tuple[int, int, int]] = (255, 0, 0)
 PIXEL_OUTLINE_WIDTH: Final[int] = 1
 COLORS: np.ndarray = np.array([WHITE_COLOR, BLACK_COLOR])
 SIZE_MULTIPLIER: Final[int] = 10
-DEFAULT_FPS: Final[int] = 60
+DEFAULT_FPS: Final[int] = 30
+
+OUTPUT_PLOTS_FILE: Final[str] = "output_plots/"
+PLOTTER_COUNTER_FILE: Final[str] = OUTPUT_PLOTS_FILE + "plotter_counter.json"
+OUTPUT_PLOT_IMG_TYPE: Final[str] = '.png'
 
 DEBUG_PRINT: Final[bool] = False
 
