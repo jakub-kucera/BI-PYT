@@ -1,4 +1,6 @@
-from typing import Final
+from typing import Final, Tuple
+
+import numpy as np
 
 RANDOM_SEED: Final[int] = 42
 MAX_FITNESS: Final[int] = 0
@@ -13,6 +15,14 @@ POPULATION_SIZE: Final[int] = 100
 MAX_GENERATIONS: Final[int] = 100
 TOURNAMENT_SIZE: Final[int] = 2
 MUTATION_INCREASE_STEP: Final[float] = 0.05
+
+WHITE_COLOR: Final[Tuple[int, int, int]] = (255, 255, 255)
+BLACK_COLOR: Final[Tuple[int, int, int]] = (0, 0, 0)
+PIXEL_OUTLINE_COLOR: Final[Tuple[int, int, int]] = (255, 0, 0)
+PIXEL_OUTLINE_WIDTH: Final[int] = 1
+COLORS: np.ndarray = np.array([WHITE_COLOR, BLACK_COLOR])
+SIZE_MULTIPLIER: Final[int] = 10
+DEFAULT_FPS: Final[int] = 60
 
 DEBUG_PRINT: Final[bool] = False
 

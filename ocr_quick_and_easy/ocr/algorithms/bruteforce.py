@@ -1,18 +1,17 @@
-import numpy as np
-from typing import Tuple
 from itertools import combinations
 
 from config import *
 from ocr.algorithms.algorithm import OCRAlgorithm
 from ocr.utils.fitness import PixelFitnessCalculator
+from ocr.gui.sync_painter import SymbolPainter
 from ocr.utils.plotter import Plotter
 
 
 class OCRBruteForce(OCRAlgorithm):
     """Class for calculation pixel combination using bruteforce"""
     def __init__(self, pixel_count: int, indexes_array: np.ndarray, fitness_calculator: PixelFitnessCalculator,
-                 plotter: Plotter):
-        super().__init__(pixel_count, indexes_array, fitness_calculator, plotter)
+                 plotter: Plotter, painter: SymbolPainter):
+        super().__init__(pixel_count, indexes_array, fitness_calculator, plotter, painter)
 
     def calculate_for_k_pixels(self) -> Tuple[bool, np.ndarray]:
         """Tries all possible solutions for a given number of chosen pixels."""
@@ -30,6 +29,7 @@ class OCRBruteForce(OCRAlgorithm):
 
             # calculates fitness for the current combinations of chosen pixels
             fitness = self.fitness_calculator.calculate_fitness(index_combination)
+            self.painter.change_chosen_pixels(index_combination)
 
             # update current best fitness, if higher
             if best_fitness == NULL_FITNESS or fitness > best_fitness:

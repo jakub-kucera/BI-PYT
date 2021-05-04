@@ -3,6 +3,7 @@ import numpy as np
 from typing import Tuple
 
 from ocr.utils.fitness import PixelFitnessCalculator
+from ocr.gui.sync_painter import SymbolPainter
 from ocr.utils.plotter import Plotter
 
 
@@ -14,11 +15,12 @@ class OCRAlgorithm(ABC):
     def __init__(self, pixel_count: int,
                  indexes_array: np.ndarray,
                  fitness_calculator: PixelFitnessCalculator,
-                 plotter: Plotter):
+                 plotter: Plotter, painter: SymbolPainter):
         self.pixel_count = pixel_count
         self.indexes_array = indexes_array
         self.fitness_calculator = fitness_calculator
         self.plotter = plotter
+        self.painter = painter
 
         if self.pixel_count <= 0 or self.pixel_count >= self.indexes_array.size:
             raise Exception("Incorrect number of chosen pixels")

@@ -1,39 +1,25 @@
-from typing import Tuple, Final
-
-import pygame as pg
-
-from config import DEFAULT_DATASET, MAX_GENERATIONS, IMAGE_THRESHOLD_VALUE
+from config import DEFAULT_DATASET, MAX_GENERATIONS
+from ocr.algorithms.bruteforce import OCRBruteForce
 from ocr.algorithms.genetic import OCRGenetic
 from ocr.ocr import OCR
 
 # def main(dataset_directory: str = DEFAULT_DATASET_ADVANCED):
-from ocr.utils.image_loader import ImageLoader
 from ocr.utils.plotter import Plotter
 
 
-def main(dataset_directory: str = DEFAULT_DATASET):
 # def main(dataset_directory: str = DEFAULT_DATASET_SMALL_20):
+def main(dataset_directory: str = DEFAULT_DATASET):
     print("Start")
     plotter = Plotter(dataset_directory)
     ocrko = OCR(plotter=plotter, dataset_directory=dataset_directory)
 
-    ocrko.calculate(algorithm_type=OCRGenetic)
-    # ocrko.calculate(algorithm_type=OCRBruteForce)
+    # ocrko.calculate(algorithm_type=OCRGenetic)
+    ocrko.calculate(algorithm_type=OCRBruteForce)
     plotter.show(section_width=MAX_GENERATIONS)
     # plotter.show()
 
 
-def pygame_demo():
-    WHITE_COLOR: Final[Tuple[int, int, int]] = (255, 255, 255)
-    BLACK_COLOR: Final[Tuple[int, int, int]] = (255, 255, 255)
-    symbols = ImageLoader.load_symbols(dataset_directory=DEFAULT_DATASET, threshold=IMAGE_THRESHOLD_VALUE)
-
-    symbol_a = symbols[0]
-    print(symbol_a)
-
-
 if __name__ == '__main__':
-    # pygame_demo()
     main()
 
     # symbols = ImageLoader.load_symbols()
@@ -59,7 +45,6 @@ if __name__ == '__main__':
     # for cmb in best_comb:
     #     print("================================================================================")
     #     print(cmb)
-
 
 
 # for loop num_pixels++ until solution found
