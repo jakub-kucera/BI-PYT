@@ -2,6 +2,7 @@ from typing import Mapping, Any, Optional, List
 
 import pytest
 import matplotlib.pyplot as plt
+from PIL import Image
 
 from ocr.utils.plotter import Plotter
 
@@ -93,15 +94,24 @@ def test_plotter_add(dataset_directory: str, records: List[int], processed_recor
     assert plotter_full.records == processed_records
 
 
-@pytest.mark.parametrize("dataset_directory, records", [
-    (TEST_DEFAULT_DATASET, []),
-    (TEST_DEFAULT_DATASET_ADVANCED, [1]),
-    ("testik", [1, 2, 3]),
-    ("asfsdafasfd", list(range(0, 20, 2))),
+
+@pytest.mark.parametrize("dataset_directory, show_plot, records", [
+    (TEST_DEFAULT_DATASET, True, []),
+    (TEST_DEFAULT_DATASET_ADVANCED, False, [1]),
+    ("testik", False, [1, 2, 3]),
+    ("asfsdafasfd", True, list(range(0, 20, 2))),
 ])
-def test_plotter_show(dataset_directory, records, mocker):
-    mocker.patch('matplotlib.pyplot.show')
+def test_plotter_show(dataset_directory, show_plot, records, mocker):
+    mocker.patch('matplotlib.pyplot.plot')
+    mocker.patch('matplotlib.pyplot.savefig')
+    mocker.patch('ocr.utils.plotter.Plotter.write_counter')
+    mocker.patch('PIL.Image.open')
     plotter = Plotter(dataset_directory)
     map(plotter.add_record, records)
-    plotter.show()
-    plt.show.assert_called_once()
+    plotter.show(show_plot=show_plot)
+    plt.plot.assert_called_once()
+    plt.savefig.assert_called_once()
+    plotter.write_counter.assert_called_once()
+
+    if show_plot:
+        Image.open.assert_called_once()

@@ -1,7 +1,10 @@
-from typing import List
+from typing import List, Tuple
 from itertools import combinations
 
-from config import *
+import numpy as np
+
+from config import NULL_FITNESS, MUTATION_INCREASE_STEP, MAX_FITNESS, \
+    TOURNAMENT_SIZE_PERCENTAGE, MUTATE_PIXELS_MAX_PERCENTAGE
 from ocr.algorithms.algorithm import OCRAlgorithm
 from ocr.gui.painter import Painter
 from ocr.utils.fitness import PixelFitnessCalculator
@@ -21,8 +24,10 @@ class OCRGenetic(OCRAlgorithm):
     """Class for calculation pixel combination using genetic algorithms"""
     def __init__(self, pixel_count: int, indexes_array: np.ndarray,
                  fitness_calculator: PixelFitnessCalculator,
-                 plotter: Plotter, painter: Painter):
-        super().__init__(pixel_count, indexes_array, fitness_calculator, plotter, painter)
+                 plotter: Plotter, painter: Painter, seed: int,
+                 population_size: int, generations_count: int):
+        super().__init__(pixel_count, indexes_array, fitness_calculator,
+                         plotter, painter, seed, population_size, generations_count)
         self.population: List[OCRIndividual] = []
         self.mutation_probability = 0.0
         self.mutate_swap_count = 0
@@ -31,7 +36,7 @@ class OCRGenetic(OCRAlgorithm):
         """Creates an initial generation of randomly generated combinations of pixels"""
 
         # randomly shuffles array of indexes
-        self.shuffle_index_array(self.indexes_array, RANDOM_SEED)
+        self.shuffle_index_array(self.indexes_array, self.seed)
 
         # creates iterator which can generate all possible combinations of a given length
         index_combinations = combinations(self.indexes_array, self.pixel_count)
@@ -44,10 +49,10 @@ class OCRGenetic(OCRAlgorithm):
             population += [OCRIndividual(index_combination, calculated_fitness)]
 
             comb_count += 1
-            if comb_count >= POPULATION_SIZE:
+            if comb_count >= self.population_size:
                 break
 
-        if comb_count < POPULATION_SIZE:
+        if comb_count < self.population_size:
             raise Exception("Population size cannot be large than number of pixels")
 
         self.population = population
@@ -61,17 +66,13 @@ class OCRGenetic(OCRAlgorithm):
 
     def select(self):
         """Selects individual combinations of indexes from the old generation using the tournament selection."""
-        tournament_size = 10
+        tournament_size = int(self.population_size*TOURNAMENT_SIZE_PERCENTAGE)
 
         new_generation = []
-        for _ in range(POPULATION_SIZE):
-            chosen_individuals = tuple(np.random.choice(POPULATION_SIZE, int(POPULATION_SIZE*TOURNAMENT_SIZE_PERCENTAGE)))
-            # chosen_individuals = (10, 20,30)
-            # a = random.randint(0, POPULATION_SIZE-1)
-            # b = random.randint(0, POPULATION_SIZE-1)
-            # c = random.randint(0, POPULATION_SIZE-1)
-            # new_generation += [max(self.population[a], self.population[b], self.population[c], key=lambda x: x.fitness)]
-            new_generation += [max([self.population[x] for x in chosen_individuals], key=lambda x: x.fitness)]
+        for _ in range(self.population_size):
+            chosen_individuals = tuple(np.random.choice(self.population_size, tournament_size, ))
+            chosen_combinations = [self.population[x] for x in chosen_individuals]
+            new_generation += [max(chosen_combinations, key=lambda x: x.fitness)]
 
         self.population = new_generation
 
@@ -80,14 +81,15 @@ class OCRGenetic(OCRAlgorithm):
 
         child_generation = []
 
-        for i in range(POPULATION_SIZE):
+        for i in range(self.population_size):
             j = i-1
 
-            # todo write more efficiently
-
-            concatenated_array = np.concatenate((self.population[i].indexes, self.population[j].indexes))
+            concatenated_array = np.concatenate((self.population[i].indexes,
+                                                 self.population[j].indexes))
             available_indexes_array = np.unique(concatenated_array, axis=0)
-            new_array_indexes = np.random.choice(len(available_indexes_array), size=self.pixel_count, replace=False)
+            new_array_indexes = np.random.choice(len(available_indexes_array),
+                                                 size=self.pixel_count,
+                                                 replace=False)
             new_array = available_indexes_array[new_array_indexes]
 
             child_generation += [OCRIndividual(new_array)]
@@ -121,7 +123,7 @@ class OCRGenetic(OCRAlgorithm):
         last_fitness = self.population[0].fitness
         best_combination = self.population[0].indexes
 
-        for gen in range(MAX_GENERATIONS):
+        for gen in range(self.generations_count):
             # selection
             self.select()
 

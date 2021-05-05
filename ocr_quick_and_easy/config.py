@@ -1,8 +1,13 @@
-from typing import Final, Tuple
+from typing import Final, Tuple, Optional
+
 import numpy as np
 
 #########################################################
 
+DEFAULT_SHOW_PLOT = False
+DEFAULT_SHOW_GUI = False
+
+TRIALS_PER_PIXEL_COUNT: Final[int] = 1
 POPULATION_SIZE: Final[int] = 100
 MAX_GENERATIONS: Final[int] = 1000
 TOURNAMENT_SIZE_PERCENTAGE: Final[float] = 0.05
@@ -15,7 +20,7 @@ IMAGE_THRESHOLD_VALUE: Final[int] = 127
 
 MAX_FITNESS: Final[int] = 0
 NULL_FITNESS: Final[int] = 1
-RANDOM_SEED: Final[int] = 42
+RANDOM_SEED: Final[Optional[int]] = None
 
 DEFAULT_DATASET: Final[str] = "Datasets/dataset/"
 DEFAULT_DATASET_SMALL_20: Final[str] = "Datasets/dataset_small_20/"
@@ -35,6 +40,10 @@ PLOTTER_COUNTER_FILE: Final[str] = OUTPUT_PLOTS_FILE + "plotter_counter.json"
 OUTPUT_PLOT_IMG_TYPE: Final[str] = '.png'
 
 DEBUG_PRINT: Final[bool] = False
+
+RUN_DESCRIPTION: Final[str] = "Program which will find a combination of " \
+                              "pixels of minimal lenght which are needed " \
+                              "to differentiate between providated symbols."
 
 SOLUTION_DATASET_6_PIXELS = [[14,  8], [3, 10], [8,  4], [14, 12], [6,  5], [1, 12]]
 
