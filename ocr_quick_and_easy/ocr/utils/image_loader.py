@@ -80,16 +80,11 @@ class ImageLoader:
     @staticmethod
     def get_filtered_matrix_indexes(overlap: np.ndarray) -> np.ndarray:
         """Return indexes of pixels with larger than passed value"""
-        # threshold: int = IMAGE_THRESHOLD_VALUE) -> Tuple[List[int], List[int]]:
 
         indexes = []
-        # y_indexes = []
-        # x_indexes = []
 
         for i in np.ndindex(overlap.shape):
             if overlap[i]:
-                # y_indexes += [i[0]]
-                # x_indexes += [i[1]]
                 indexes += [i]
 
         if DEBUG_PRINT:

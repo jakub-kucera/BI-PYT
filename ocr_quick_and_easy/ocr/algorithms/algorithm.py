@@ -1,10 +1,10 @@
+from typing import Tuple, Optional
 from abc import ABC, abstractmethod
 import numpy as np
-from typing import Tuple
 
+from config import RANDOM_SEED
 from ocr.gui.painter import Painter
 from ocr.utils.fitness import PixelFitnessCalculator
-from ocr.gui.sync_painter import SyncPainter
 from ocr.utils.plotter import Plotter
 
 
@@ -16,12 +16,16 @@ class OCRAlgorithm(ABC):
     def __init__(self, pixel_count: int,
                  indexes_array: np.ndarray,
                  fitness_calculator: PixelFitnessCalculator,
-                 plotter: Plotter, painter: Painter):
+                 plotter: Plotter, painter: Painter, seed: int,
+                 population_size: int, generations_count: int):
         self.pixel_count = pixel_count
         self.indexes_array = indexes_array
         self.fitness_calculator = fitness_calculator
         self.plotter = plotter
         self.painter = painter
+        self.population_size = population_size
+        self.generations_count = generations_count
+        self.seed = seed
 
         if self.pixel_count <= 0 or self.pixel_count >= self.indexes_array.size:
             raise Exception("Incorrect number of chosen pixels")
@@ -35,6 +39,6 @@ class OCRAlgorithm(ABC):
         pass
 
     @staticmethod
-    def shuffle_index_array(indexes_array, shuffle_seed: int = None):
+    def shuffle_index_array(indexes_array, shuffle_seed: Optional[int] = RANDOM_SEED):
         """Shuffles array of indexes"""
         np.random.default_rng(shuffle_seed).shuffle(indexes_array)

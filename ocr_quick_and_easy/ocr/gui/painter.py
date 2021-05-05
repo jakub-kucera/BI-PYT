@@ -4,6 +4,8 @@ from abc import ABC, abstractmethod
 from typing import List, Union, Optional
 
 import numpy as np
+import os
+os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 import pygame as pg
 from pygame.surface import SurfaceType, Surface
 from pygame.time import Clock

@@ -1,9 +1,7 @@
-import numpy as np
-from collections import Counter
-from xxhash import xxh3_64
 from typing import List
-
-from config import *
+from collections import Counter
+import numpy as np
+from xxhash import xxh3_64
 
 
 class PixelFitnessCalculator:
@@ -22,14 +20,15 @@ class PixelFitnessCalculator:
         """Calculates fitness for a given indexes of chosen pixels"""
 
         if indexes_array[0].size != 2:
-            raise ValueError(f"Incorrect indexes_array shape ({indexes_array[0].size} != 2), \n {indexes_array}")
+            raise ValueError(f"Incorrect indexes_array shape \
+            ({indexes_array[0].size} != 2), \n {indexes_array}")
 
         hashes = []
         for i in range(self.symbol_count):
-            hashed_array = xxh3_64(self.symbols[i][indexes_array.T[0], indexes_array.T[1]]).hexdigest()
+            hashed_array = xxh3_64(self.symbols[i]
+                                   [indexes_array.T[0], indexes_array.T[1]]).hexdigest()
             hashes += [hashed_array]
 
-        print(Counter(hashes)) if DEBUG_PRINT else None
         inverted_fitness = 1
         total_occurrence_counter = 0
         for count in Counter(hashes).values():
@@ -41,5 +40,4 @@ class PixelFitnessCalculator:
             fitness. Is {total_occurrence_counter}, but should be {self.symbol_count}")
 
         fitness = self.invert_fitness(inverted_fitness)
-        print(fitness) if DEBUG_PRINT else None
         return fitness
