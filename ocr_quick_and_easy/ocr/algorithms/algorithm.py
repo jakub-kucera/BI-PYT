@@ -16,7 +16,7 @@ class OCRAlgorithm(ABC):
     def __init__(self, pixel_count: int,
                  indexes_array: np.ndarray,
                  fitness_calculator: PixelFitnessCalculator,
-                 plotter: Plotter, painter: Painter, seed: int,
+                 plotter: Plotter, painter: Painter, seed: Optional[int],
                  population_size: int, generations_count: int):
         self.pixel_count = pixel_count
         self.indexes_array = indexes_array

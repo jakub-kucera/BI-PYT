@@ -4,7 +4,7 @@ import numpy as np
 import pygame as pg
 from pygame.constants import KEYDOWN, K_ESCAPE
 
-from config import BLACK_COLOR, DEFAULT_FPS
+from config import BLACK_COLOR
 from ocr.gui.painter import Painter
 
 
@@ -29,7 +29,7 @@ class SyncPainter(Painter):
 
         for event in pg.event.get():
             if event.type == pg.QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
-                return False
+                return
 
         self.screen.fill(BLACK_COLOR)
         self.create_clean_symbol_surfaces()

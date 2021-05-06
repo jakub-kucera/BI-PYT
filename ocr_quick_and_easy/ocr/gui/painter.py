@@ -1,17 +1,17 @@
+import os
 import itertools
 import math
 from abc import ABC, abstractmethod
 from typing import List, Union, Optional
 
 import numpy as np
-import os
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 import pygame as pg
 from pygame.surface import SurfaceType, Surface
 from pygame.time import Clock
 
-from config import SIZE_MULTIPLIER, COLORS, BLACK_COLOR, PIXEL_OUTLINE_WIDTH, PIXEL_OUTLINE_COLOR, DEFAULT_FPS, \
-    GREY_COLOR
+from config import SIZE_MULTIPLIER, COLORS, BLACK_COLOR, \
+    PIXEL_OUTLINE_WIDTH, PIXEL_OUTLINE_COLOR, DEFAULT_FPS, GREY_COLOR
 
 
 class Painter(ABC):
@@ -55,9 +55,12 @@ class Painter(ABC):
             self.symbol_surfaces += [surface_scaled]
 
     def paint_pixel_grid(self):
-        for symbol, pixel_num in itertools.product(self.symbol_surfaces, range(self.symbol_orig_height)):
-            pg.draw.rect(symbol, GREY_COLOR, ((0, pixel_num*SIZE_MULTIPLIER), (self.symbol_width, 1)))
-            pg.draw.rect(symbol, GREY_COLOR, ((pixel_num*SIZE_MULTIPLIER, 0), (1, self.symbol_height)))
+        for symbol, pixel_num in itertools.product(self.symbol_surfaces,
+                                                   range(self.symbol_orig_height)):
+            pg.draw.rect(symbol, GREY_COLOR,
+                         ((0, pixel_num*SIZE_MULTIPLIER), (self.symbol_width, 1)))
+            pg.draw.rect(symbol, GREY_COLOR,
+                         ((pixel_num*SIZE_MULTIPLIER, 0), (1, self.symbol_height)))
 
     def paint_symbol_border(self):
         """Paints border around each symbol"""
@@ -91,7 +94,11 @@ class Painter(ABC):
 
     def add_symbols_on_screen(self):
         """Paints symbols on screen"""
-        location_iterator = itertools.product(range(0, self.symbols_vertical * self.symbol_height, self.symbol_height),
-                                              range(0, self.symbols_horizontal * self.symbol_width, self.symbol_width))
+        location_iterator = itertools.product(range(0,
+                                                    self.symbols_vertical * self.symbol_height,
+                                                    self.symbol_height),
+                                              range(0,
+                                                    self.symbols_horizontal * self.symbol_width,
+                                                    self.symbol_width))
         for surface, (y, x) in zip(self.symbol_surfaces, location_iterator):
             self.screen.blit(surface, (x, y))

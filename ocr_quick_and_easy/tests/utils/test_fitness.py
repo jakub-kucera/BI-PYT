@@ -1,8 +1,5 @@
-import itertools
-
 import pytest
 import numpy as np
-from typing import List
 
 from config import SOLUTION_DATASET_5_PIXELS, SOLUTION_DATASET_6_PIXELS
 from ocr.utils.fitness import PixelFitnessCalculator

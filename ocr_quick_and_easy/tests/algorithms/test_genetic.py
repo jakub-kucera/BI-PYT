@@ -1,14 +1,7 @@
-import itertools
-from unittest import mock
-from unittest.mock import MagicMock
-
 import pytest
 import numpy as np
-from typing import List
 
-from config import SOLUTION_DATASET_5_PIXELS, SOLUTION_DATASET_6_PIXELS, NULL_FITNESS
-from ocr.algorithms.algorithm import OCRAlgorithm
-from ocr.algorithms.bruteforce import OCRBruteForce
+from config import NULL_FITNESS
 from ocr.algorithms.genetic import OCRGenetic
 from ocr.gui.dummy_painter import DummyPainter
 from ocr.gui.sync_painter import SyncPainter

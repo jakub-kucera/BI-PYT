@@ -1,6 +1,6 @@
 import os
 import pathlib
-from typing import List, Tuple
+from typing import List
 import numpy as np
 from PIL import Image
 import filetype
@@ -40,7 +40,6 @@ class ImageLoader:
 
         # goes through all files in directory
         for symbol_path in sorted(dataset_file.iterdir()):
-            print(symbol_path) if DEBUG_PRINT else None
             if symbol_path.is_file() and filetype.is_image(symbol_path.__str__()):
                 img = Image.open(symbol_path).convert('L')
 

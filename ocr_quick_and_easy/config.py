@@ -88,7 +88,4 @@ Symbols:
 [ True False False  True  True]
 [False  True  True False False]
 [False False False  True False]
-/home/kucerj56/Documents/PYT/kucerj56/ocr_quick_and_easy/ocr/plotter.py:40: UserWarning: \
-Matplotlib is currently using agg, which is a non-GUI backend, so cannot show the figure.
-  plt.show()
 """
