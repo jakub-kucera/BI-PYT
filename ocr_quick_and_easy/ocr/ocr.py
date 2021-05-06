@@ -5,7 +5,9 @@ from typing import Type, Optional
 
 import numpy as np
 
+from config import POPULATION_SIZE, MAX_GENERATIONS, TRIALS_PER_PIXEL_COUNT
 from ocr.algorithms.algorithm import OCRAlgorithm
+from ocr.algorithms.genetic import OCRGenetic
 from ocr.gui.painter import Painter
 from ocr.gui.sync_painter import SyncPainter
 from ocr.utils.fitness import PixelFitnessCalculator
@@ -33,35 +35,31 @@ class OCR:
         """Calculates number of pixels that are needed to differentiate between given number of symbols."""
         return math.ceil(math.log2(symbol_count))
 
-    def paint_only_combinations(self, chosen_pixels: np.ndarray):
+    def paint_only_combinations(self, chosen_pixels: np.ndarray):  # not used
         """Only show passed pixel combination using gui"""
         painter = SyncPainter(symbols=self.array_symbols)
         painter.init_painter()
 
-        print(f"Fitness: {chosen_pixels}")
-        print(self.fitness_calculator.calculate_fitness(chosen_pixels))
+        # print(f"Fitness: {chosen_pixels}")
+        # print(self.fitness_calculator.calculate_fitness(chosen_pixels))
 
         while True:
             painter.change_chosen_pixels(chosen_pixels)
 
-    def calculate(self, algorithm_type: Type[OCRAlgorithm],
-                  painter_type: Type[Painter],
-                  population_size: int,
-                  generations_count: int,
-                  trials_count: int,
-                  seed: int
+    def calculate(self, algorithm_type: Type[OCRAlgorithm] = OCRGenetic,
+                  painter_type: Type[Painter] = SyncPainter,
+                  population_size: int = POPULATION_SIZE,
+                  generations_count: int = MAX_GENERATIONS,
+                  trials_count: int = TRIALS_PER_PIXEL_COUNT,
+                  seed: Optional[int] = None
                   ):
         """Runs calculation using provided method for increasing number of chosen pixels."""
-
-        # ocr_algorithm: OCRAlgorithm = algorithm_type(fitness_calculator=self.fitness_calculator,
-        #                                              plotter=self.plotter)
 
         random.seed(seed)
         np.random.seed(seed)
 
         painter = painter_type(symbols=self.array_symbols)
         painter.init_painter()
-
 
         pixel_count = self.calculate_pixel_count(len(self.array_symbols))
 

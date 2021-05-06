@@ -45,8 +45,8 @@ class OCRGenetic(OCRAlgorithm):
         population = []
         # generates new index combinations
         for index_combination in (np.array(comb) for comb in index_combinations):
-            calculated_fitness = self.fitness_calculator.calculate_fitness(index_combination)
-            population += [OCRIndividual(index_combination, calculated_fitness)]
+            # calculated_fitness = self.fitness_calculator.calculate_fitness(indexes_array=index_combination)
+            population += [OCRIndividual(index_combination)]
 
             comb_count += 1
             if comb_count >= self.population_size:
