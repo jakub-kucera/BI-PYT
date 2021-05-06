@@ -34,7 +34,7 @@ class OCRBruteForce(OCRAlgorithm):
             comb_count += 1
 
             # calculates fitness for the current combinations of chosen pixels
-            fitness = self.fitness_calculator.calculate_fitness(index_combination)
+            fitness = self.fitness_calculator.calculate_fitness(indexes_array=index_combination)
             self.painter.change_chosen_pixels(index_combination)
 
             # update current best fitness, if higher

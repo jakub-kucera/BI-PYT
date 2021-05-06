@@ -23,14 +23,14 @@ PAINTER_TYPE_TO_CLASS: Dict[bool, Type[Painter]] = {False: DummyPainter, True: S
 # todo write report
 
 
-def main(dataset_directory: str,
-         algorithm_type: Type[OCRAlgorithm],
-         painter_type: Type[Painter],
-         show_plot: bool,
-         population_size: int,
-         generations_count: int,
-         trials_count: int,
-         seed: int
+def main(dataset_directory: str = DEFAULT_DATASET,
+         algorithm_type: Type[OCRAlgorithm] = OCRGenetic,
+         painter_type: Type[Painter] = SyncPainter,
+         show_plot: bool = DEFAULT_SHOW_PLOT,
+         population_size: int = POPULATION_SIZE,
+         generations_count: int = MAX_GENERATIONS,
+         trials_count: int = TRIALS_PER_PIXEL_COUNT,
+         seed: int = None
          ):
     print("Start")
     plotter = Plotter(dataset_directory)

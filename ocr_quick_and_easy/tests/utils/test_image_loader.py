@@ -4,7 +4,7 @@ from typing import List
 
 from ocr.utils.image_loader import ImageLoader
 
-TEST_DATASETS = "tests/test_datasets/"
+TEST_DATASETS = "tests/" + "test_datasets/"
 
 TEST_DEFAULT_DATASET = "dataset/"
 TEST_DEFAULT_DATASET_ADVANCED = "written_hiragana_dataset/"

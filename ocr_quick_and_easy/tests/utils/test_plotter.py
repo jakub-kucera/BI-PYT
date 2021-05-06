@@ -9,11 +9,6 @@ from ocr.utils.plotter import Plotter
 TEST_DEFAULT_DATASET = "dataset/"
 TEST_DEFAULT_DATASET_ADVANCED = "test_datasets/written_hiragana_dataset/"
 
-# dataset_directory: str,
-# records: List[int] = None,
-# cutoff: int = -200,
-# section_width: int = None
-
 
 @pytest.mark.parametrize("dataset_directory, records, cutoff, section_width", [
     (
@@ -92,7 +87,6 @@ def test_plotter_add(dataset_directory: str, records: List[int], processed_recor
 
     plotter_full = Plotter(dataset_directory=dataset_directory, cutoff=cutoff, records=records)
     assert plotter_full.records == processed_records
-
 
 
 @pytest.mark.parametrize("dataset_directory, show_plot, records", [
