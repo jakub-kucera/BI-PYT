@@ -24,7 +24,7 @@ class OCR:
         self.array_symbols = ImageLoader.load_symbols(dataset_directory=dataset_directory)
         self.symbol_overlap = ImageLoader.create_overlap_distinct(symbols=self.array_symbols)
 
-        self.overlapping_indexes = ImageLoader.get_filtered_matrix_indexes(overlap=self.symbol_overlap)
+        self.overlapping_indexes = ImageLoader.get_filtered_matrix_indexes(self.symbol_overlap)
         self.total_overlap_pixel_count = len(self.overlapping_indexes)
 
         self.plotter = plotter
@@ -32,7 +32,8 @@ class OCR:
 
     @staticmethod
     def calculate_pixel_count(symbol_count: int):
-        """Calculates number of pixels that are needed to differentiate between given number of symbols."""
+        """Calculates number of pixels that are needed to
+        differentiate between given number of symbols."""
         return math.ceil(math.log2(symbol_count))
 
     def paint_only_combinations(self, chosen_pixels: np.ndarray):  # not used
@@ -74,12 +75,13 @@ class OCR:
                 print(f"Starting testing {current_pixel_count} pixels, trial #{attempts_pixel_count}")
                 start = time.time()
 
-                ocr_algorithm: OCRAlgorithm = algorithm_type(pixel_count=current_pixel_count,
-                                                             indexes_array=self.overlapping_indexes.copy(),
-                                                             fitness_calculator=self.fitness_calculator,
-                                                             plotter=self.plotter, painter=painter,
-                                                             seed=seed, population_size=population_size,
-                                                             generations_count=generations_count)
+                ocr_algorithm: OCRAlgorithm\
+                    = algorithm_type(pixel_count=current_pixel_count,
+                                     indexes_array=self.overlapping_indexes.copy(),
+                                     fitness_calculator=self.fitness_calculator,
+                                     plotter=self.plotter, painter=painter,
+                                     seed=seed, population_size=population_size,
+                                     generations_count=generations_count)
 
                 found_solution, best_combination = ocr_algorithm.calculate_for_k_pixels()
                 total = time.time() - start

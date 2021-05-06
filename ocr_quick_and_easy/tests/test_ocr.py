@@ -1,10 +1,8 @@
 import random
-from typing import Mapping, Any, Optional, List, Type
+from typing import Type
 
 import numpy as np
 import pytest
-import matplotlib.pyplot as plt
-from PIL import Image
 import ocr
 from ocr.algorithms.algorithm import OCRAlgorithm
 from ocr.algorithms.bruteforce import OCRBruteForce
@@ -19,6 +17,7 @@ TEST_DEFAULT_DATASET = "tests/test_datasets/dataset/"
 TEST_DEFAULT_DATASET_ADVANCED = "tests/test_datasets/written_hiragana_dataset/"
 
 TEST_ALGORITHM_CLASS_TO_PACKAGE = {OCRGenetic: "genetic.OCRGenetic", OCRAlgorithm: "algorithm.OCRAlgorithm", OCRBruteForce: "bruteforce.OCRBruteForce"}
+
 
 @pytest.mark.parametrize("dataset_directory, overlapping_indexes_count", [
     (TEST_DEFAULT_DATASET, 214),

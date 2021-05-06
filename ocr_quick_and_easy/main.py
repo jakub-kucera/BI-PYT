@@ -14,13 +14,10 @@ from ocr.ocr import OCR
 
 from ocr.utils.plotter import Plotter
 
-ALGORITHM_TYPE_TO_CLASS: Dict[str, Type[OCRAlgorithm]] = {'Genetic': OCRGenetic, 'BruteForce': OCRBruteForce}
-# PAINTER_TYPE_TO_CLASS: Dict[str, Type[Painter]] = {'Dummy': DummyPainter, 'Sync': SyncPainter}
-PAINTER_TYPE_TO_CLASS: Dict[bool, Type[Painter]] = {False: DummyPainter, True: SyncPainter}
-
-# todo add tests
-# todo write func/class descriptions
-# todo write report
+ALGORITHM_TYPE_TO_CLASS: Dict[str, Type[OCRAlgorithm]] \
+    = {'Genetic': OCRGenetic, 'BruteForce': OCRBruteForce}
+PAINTER_TYPE_TO_CLASS: Dict[bool, Type[Painter]] \
+    = {False: DummyPainter, True: SyncPainter}
 
 
 def main(dataset_directory: str = DEFAULT_DATASET,
@@ -46,21 +43,25 @@ def main(dataset_directory: str = DEFAULT_DATASET,
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(prog='ocr.py', description=RUN_DESCRIPTION)
-    parser.add_argument('-dr', '--directory', action='store', default=DEFAULT_DATASET, metavar='PATH',
-                        type=str, help='Path to directory with symbol images.')
-    parser.add_argument('-al', '--algorithm', action='store', default='Genetic', metavar='TYPE',
-                        type=str, help='Type of algorithm that is supposed to be used.',
-                        choices=ALGORITHM_TYPE_TO_CLASS.keys())
+    parser.add_argument('-dr', '--directory', action='store', default=DEFAULT_DATASET,
+                        metavar='PATH', type=str,
+                        help='Path to directory with symbol images.')
+    parser.add_argument('-al', '--algorithm', action='store', default='Genetic',
+                        metavar='TYPE', type=str, choices=ALGORITHM_TYPE_TO_CLASS.keys(),
+                        help='Type of algorithm that is supposed to be used.')
     parser.add_argument('-ui', '--show_gui', action='store_true', default=DEFAULT_SHOW_GUI,
                         help='Show GUI with all the symbols and currently chosen pixels')
     parser.add_argument('-pl', '--plot_fitness', action='store_true', default=DEFAULT_SHOW_PLOT,
                         help='Show plot representing fitness value over time')
-    parser.add_argument('-ps', '--population_size', action='store', default=POPULATION_SIZE, metavar='SIZE',
-                        type=int, help='Size of each generation when using genetic algorithm.')
-    parser.add_argument('-gc', '--generations_count', action='store', default=MAX_GENERATIONS, metavar='COUNT',
-                        type=int, help='Maximum number of generations in one run.')
-    parser.add_argument('-tc', '--trials_count', action='store', default=TRIALS_PER_PIXEL_COUNT, metavar='COUNT',
-                        type=int, help='Maximum number of attempted runs of chosen algorithm for each pixel count.')
+    parser.add_argument('-ps', '--population_size', action='store', default=POPULATION_SIZE,
+                        metavar='SIZE', type=int,
+                        help='Size of each generation when using genetic algorithm.')
+    parser.add_argument('-gc', '--generations_count', action='store', default=MAX_GENERATIONS,
+                        metavar='COUNT', type=int,
+                        help='Maximum number of generations in one run.')
+    parser.add_argument('-tc', '--trials_count', action='store', default=TRIALS_PER_PIXEL_COUNT,
+                        metavar='COUNT', type=int,
+                        help='Maximum number of attempted runs of chosen algorithm for each pixel count.')
     parser.add_argument('-sd', '--seed', action='store', default=None, metavar='SEED',
                         type=int, help="Seed which is used to initialize random functions.")
 

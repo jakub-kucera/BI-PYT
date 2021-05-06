@@ -1,4 +1,4 @@
-from typing import Mapping, Any, Optional, List
+from typing import Optional, List
 
 import pytest
 import matplotlib.pyplot as plt

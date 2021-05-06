@@ -1,5 +1,5 @@
 from itertools import combinations
-from typing import Tuple
+from typing import Tuple, Optional
 
 import numpy as np
 
@@ -14,7 +14,7 @@ class OCRBruteForce(OCRAlgorithm):
     """Class for calculation pixel combination using bruteforce"""
     def __init__(self, pixel_count: int, indexes_array: np.ndarray,
                  fitness_calculator: PixelFitnessCalculator,
-                 plotter: Plotter, painter: Painter, seed: int,
+                 plotter: Plotter, painter: Painter, seed: Optional[int],
                  population_size: int, generations_count: int):
         super().__init__(pixel_count, indexes_array, fitness_calculator,
                          plotter, painter, seed, population_size, generations_count)

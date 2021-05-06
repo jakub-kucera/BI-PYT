@@ -1,6 +1,6 @@
-import pytest
 import numpy as np
 from typing import List
+import pytest
 
 from ocr.utils.image_loader import ImageLoader
 

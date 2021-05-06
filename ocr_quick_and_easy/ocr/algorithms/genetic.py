@@ -1,4 +1,4 @@
-from typing import List, Tuple
+from typing import List, Tuple, Optional
 from itertools import combinations
 
 import numpy as np
@@ -12,6 +12,7 @@ from ocr.utils.plotter import Plotter
 
 
 class OCRIndividual:
+    """Class representing a single individual - combination os chosen pixels"""
     def __init__(self, indexes: np.ndarray, fitness=NULL_FITNESS):
         self.indexes = indexes
         self.fitness = fitness
@@ -24,7 +25,7 @@ class OCRGenetic(OCRAlgorithm):
     """Class for calculation pixel combination using genetic algorithms"""
     def __init__(self, pixel_count: int, indexes_array: np.ndarray,
                  fitness_calculator: PixelFitnessCalculator,
-                 plotter: Plotter, painter: Painter, seed: int,
+                 plotter: Plotter, painter: Painter, seed: Optional[int],
                  population_size: int, generations_count: int):
         super().__init__(pixel_count, indexes_array, fitness_calculator,
                          plotter, painter, seed, population_size, generations_count)
@@ -45,7 +46,8 @@ class OCRGenetic(OCRAlgorithm):
         population = []
         # generates new index combinations
         for index_combination in (np.array(comb) for comb in index_combinations):
-            # calculated_fitness = self.fitness_calculator.calculate_fitness(indexes_array=index_combination)
+            # calculated_fitness \
+            #     = self.fitness_calculator.calculate_fitness(indexes_array=index_combination)
             population += [OCRIndividual(index_combination)]
 
             comb_count += 1
@@ -65,7 +67,8 @@ class OCRGenetic(OCRAlgorithm):
         self.population.sort(key=lambda x: x.fitness, reverse=True)
 
     def select(self):
-        """Selects individual combinations of indexes from the old generation using the tournament selection."""
+        """Selects individual combinations of indexes from\
+         the old generation using the tournament selection."""
         tournament_size = int(self.population_size*TOURNAMENT_SIZE_PERCENTAGE)
 
         new_generation = []
@@ -123,7 +126,7 @@ class OCRGenetic(OCRAlgorithm):
         last_fitness = self.population[0].fitness
         best_combination = self.population[0].indexes
 
-        for gen in range(self.generations_count):
+        for _ in range(self.generations_count):
             # selection
             self.select()
 
