@@ -22,7 +22,7 @@ PAINTER_TYPE_TO_CLASS: Dict[bool, Type[Painter]] \
 
 def main(dataset_directory: str = DEFAULT_DATASET,
          algorithm_type: Type[OCRAlgorithm] = OCRGenetic,
-         painter_type: Type[Painter] = SyncPainter,
+         painter_type: Type[Painter] = DummyPainter,
          show_plot: bool = DEFAULT_SHOW_PLOT,
          population_size: int = POPULATION_SIZE,
          generations_count: int = MAX_GENERATIONS,

@@ -16,3 +16,7 @@ Run with default values:
 To show help run:
 
     python main.py --help
+
+To run tests:
+
+    pytest

@@ -1,10 +1,12 @@
-from typing import List, Tuple, Optional
+import copy
+from typing import List, Tuple, Optional, Iterator
 from itertools import combinations
 
 import numpy as np
 
 from config import NULL_FITNESS, MUTATION_INCREASE_STEP, MAX_FITNESS, \
-    TOURNAMENT_SIZE_PERCENTAGE, MUTATE_PIXELS_MAX_PERCENTAGE
+    TOURNAMENT_SIZE_PERCENTAGE, MUTATE_PIXELS_MAX_PERCENTAGE, CROSSOVER_PERCENTAGE, SELECT_OLD_PERCENTAGE, \
+    POPULATION_SIZE
 from ocr.algorithms.algorithm import OCRAlgorithm
 from ocr.gui.painter import Painter
 from ocr.utils.fitness import PixelFitnessCalculator
@@ -30,32 +32,51 @@ class OCRGenetic(OCRAlgorithm):
         super().__init__(pixel_count, indexes_array, fitness_calculator,
                          plotter, painter, seed, population_size, generations_count)
         self.population: List[OCRIndividual] = []
-        self.mutation_probability = 0.0
+        self.mutation_probability = 1 / float(pixel_count)
         self.mutate_swap_count = 0
+        self.pixel_combinations_generator: Optional[Iterator[Tuple[int, ...]]] = None
+
+    def get_new_pixel_combination(self) -> OCRIndividual:
+        generation_array_indexes = np.random.choice(len(self.indexes_array),
+                                                    size=self.pixel_count,
+                                                    replace=False)
+        new_generation = self.indexes_array[generation_array_indexes]
+        return OCRIndividual(new_generation)
 
     def create_first_generation(self):
+        population = []
+
+        for _ in range(self.population_size):
+            combination_array_indexes = np.random.choice(len(self.indexes_array),
+                                                         size=self.pixel_count,
+                                                         replace=False)
+            new_combination = self.indexes_array[combination_array_indexes]
+            population.append(OCRIndividual(new_combination))
+        self.population = population
+
+    def create_first_generation_old(self):
         """Creates an initial generation of randomly generated combinations of pixels"""
 
         # randomly shuffles array of indexes
         self.shuffle_index_array(self.indexes_array, self.seed)
 
         # creates iterator which can generate all possible combinations of a given length
-        index_combinations = combinations(self.indexes_array, self.pixel_count)
-        comb_count = 0
+        self.pixel_combinations_generator = combinations(self.indexes_array, self.pixel_count)
 
         population = []
         # generates new index combinations
-        for index_combination in (np.array(comb) for comb in index_combinations):
+        # for index_combination in (np.array(comb) for comb in self.pixel_combinations_generator):
+        for _ in range(self.population_size):
             # calculated_fitness \
             #     = self.fitness_calculator.calculate_fitness(indexes_array=index_combination)
-            population += [OCRIndividual(index_combination)]
+            population.append(self.get_new_pixel_combination())
 
-            comb_count += 1
-            if comb_count >= self.population_size:
-                break
+            # comb_count += 1
+            # if comb_count >= self.population_size:
+            #     break
 
-        if comb_count < self.population_size:
-            raise Exception("Population size cannot be large than number of pixels")
+        # if comb_count < self.population_size:
+        #     raise Exception("Population size cannot be large than number of pixels")
 
         self.population = population
 
@@ -73,9 +94,17 @@ class OCRGenetic(OCRAlgorithm):
 
         new_generation = []
         for _ in range(self.population_size):
-            chosen_individuals = tuple(np.random.choice(self.population_size, tournament_size, ))
-            chosen_combinations = [self.population[x] for x in chosen_individuals]
-            new_generation += [max(chosen_combinations, key=lambda x: x.fitness)]
+
+            if SELECT_OLD_PERCENTAGE < np.random.uniform():
+                new_generation.append(self.get_new_pixel_combination())
+                continue
+
+            chosen_individual_indexes = tuple(np.random.choice(self.population_size, tournament_size))
+            chosen_individuals = [self.population[x] for x in chosen_individual_indexes]
+            best_individual = max(chosen_individuals, key=lambda x: x.fitness)
+
+            new_generation.append(copy.deepcopy(best_individual))
+            # new_generation.append(OCRIndividual(indexes=np.copy(best_individual.indexes)))
 
         self.population = new_generation
 
@@ -87,6 +116,11 @@ class OCRGenetic(OCRAlgorithm):
         for i in range(self.population_size):
             j = i-1
 
+            if CROSSOVER_PERCENTAGE < np.random.uniform():
+                child_generation.append(self.population[i])
+                continue
+                # pass
+
             concatenated_array = np.concatenate((self.population[i].indexes,
                                                  self.population[j].indexes))
             available_indexes_array = np.unique(concatenated_array, axis=0)
@@ -95,7 +129,7 @@ class OCRGenetic(OCRAlgorithm):
                                                  replace=False)
             new_array = available_indexes_array[new_array_indexes]
 
-            child_generation += [OCRIndividual(new_array)]
+            child_generation.append(OCRIndividual(new_array))
 
         self.population = child_generation
 
@@ -104,20 +138,21 @@ class OCRGenetic(OCRAlgorithm):
 
         # goes thought entire populations
         for individual in self.population:
-            if self.mutation_probability > np.random.uniform():
-                for _ in range(np.random.choice(int(self.pixel_count * MUTATE_PIXELS_MAX_PERCENTAGE), 1)[0]):
-                    for index_new in (np.random.choice(len(self.indexes_array), 1) for x in range(len(self.indexes_array))):
-                        # replaces pixels if not already present in pixel combination
-                        if self.indexes_array[index_new] not in individual.indexes:
-                            index_old = np.random.choice(self.pixel_count, 1)
-                            individual.indexes[index_old] = self.indexes_array[index_new]
-                            self.mutate_swap_count += 1
-                            break
+            if self.mutation_probability < np.random.uniform():
+                continue
+
+            for _ in range(np.random.choice(int(self.pixel_count * MUTATE_PIXELS_MAX_PERCENTAGE), 1)[0]):
+                for index_new in (np.random.choice(len(self.indexes_array), 1) for x in range(len(self.indexes_array))):
+                    # replaces pixels if not already present in pixel combination
+                    if self.indexes_array[index_new] not in individual.indexes:
+                        index_old = np.random.choice(self.pixel_count, 1)
+                        individual.indexes[index_old] = self.indexes_array[index_new]
+                        self.mutate_swap_count += 1
+                        break
 
     def calculate_for_k_pixels(self) -> Tuple[bool, np.ndarray]:
         """Uses genetic algorithm to find a combination of pixels."""
         self.population = []
-        self.mutation_probability = 0.0
 
         self.create_first_generation()
         self.recalculate_fitness()
@@ -134,19 +169,19 @@ class OCRGenetic(OCRAlgorithm):
             self.crossover()
 
             # mutate
-            if self.mutation_probability > 0.0:
-                self.mutate()
-                # pass
+            self.mutate()
 
             # recalculate
             self.recalculate_fitness()
 
             # get best combinations of current generation
             fitness = self.population[0].fitness
+
+            # generation_all_fitness = [individual.fitness for individual in self.population]
             self.plotter.add_record(fitness)
             self.painter.change_chosen_pixels(self.population[0].indexes)
 
-            if last_fitness >= fitness:
+            if last_fitness > fitness:
                 self.mutation_probability += MUTATION_INCREASE_STEP
             last_fitness = fitness
 

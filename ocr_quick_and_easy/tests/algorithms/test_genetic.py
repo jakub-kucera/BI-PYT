@@ -1,7 +1,7 @@
 import pytest
 import numpy as np
 
-from config import NULL_FITNESS
+from config import NULL_FITNESS, SELECT_OLD_PERCENTAGE
 from ocr.algorithms.genetic import OCRGenetic
 from ocr.gui.dummy_painter import DummyPainter
 from ocr.gui.sync_painter import SyncPainter
@@ -204,7 +204,7 @@ def test_genetic_recalculate_fitness(pixel_count,
         Plotter,
         SyncPainter,
         None,
-        40,
+        100,
         8,
     ),
 ])
@@ -239,8 +239,7 @@ def test_genetic_select(pixel_count,
     assert fitness_sum_post > fitness_sum_orig
 
     for individual in algortihm.population:
-        assert individual.fitness != NULL_FITNESS
-        assert individual.fitness <= 0
+        assert individual.fitness <= NULL_FITNESS or individual.fitness <= 0
         assert len(individual.indexes) == pixel_count
 
 ###########################################################################################
@@ -399,7 +398,7 @@ def test_genetic_mutation(pixel_count,
         Plotter,
         SyncPainter,
         None,
-        40,
+        100,
         8,
     ),
 ])
