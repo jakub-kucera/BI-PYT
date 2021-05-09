@@ -4,11 +4,5 @@ pygame
 pytest
 pytest-mock
 Pillow
-flake8
-mypy
-pylint
 filetype
 xxhash
-ipython
-jupyter
-matplotlib-terminal
