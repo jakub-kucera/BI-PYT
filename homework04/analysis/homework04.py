@@ -1,4 +1,4 @@
-"""
+""" minor change
 In this homework, we will use well-known Titanic dataset which contains 
 information about passengers of Titanic. The dataset consists of personal 
 information about each passenger and indicator whether the passenger 
