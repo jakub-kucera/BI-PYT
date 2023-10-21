@@ -1,0 +1,8 @@
+numpy
+matplotlib
+pygame
+pytest
+pytest-mock
+Pillow
+filetype
+xxhash
